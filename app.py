@@ -46,7 +46,7 @@ st.markdown("""
 st.set_page_config(page_title="Nhận diện bệnh lá cà chua", layout="centered")
 st.markdown('<div class="title">🍅 ỨNG DỤNG NHẬN DIỆN BỆNH QUA LÁ CÀ CHUA </div>', unsafe_allow_html=True)
 
-st.write("📤 Vui lòng tải ảnh lá cà chua (có thể bị bệnh hoặc khỏe mạnh) để tiến hành phân tích:")
+st.write("📤 Vui lòng bấm vào nút Browse files để tải ảnh lá cà chua (có thể bị bệnh hoặc khỏe mạnh) và hệ thống tự động cho kết quả:")
 
 tep_anh = st.file_uploader("Chọn ảnh (jpg, jpeg, png)", type=["jpg", "jpeg", "png"])
 
@@ -76,7 +76,7 @@ if tep_anh is not None:
             "Late_blight": "🔵 **Mốc sương muộn**\nNguyên nhân: Nấm Phytophthora.\nTriệu chứng: Mảng nâu đậm, viền vàng.\nTác hại: Gây héo, chết cây hàng loạt.",
             "Leaf_Mold": "🟡 **Mốc lá**\nNguyên nhân: Nấm Cladosporium.\nTriệu chứng: Đốm vàng, mốc xám.\nTác hại: Rụng lá sớm, giảm năng suất.",
             "Septoria_leaf_spot": "🟠 **Đốm lá Septoria**\nNguyên nhân: Nấm Septoria.\nTriệu chứng: Đốm tròn, viền sẫm.\nTác hại: Rụng lá, cây yếu.",
-            "Yellow_Leaf_Curl_Virus": "🟣 **Virus xoăn vàng lá**\nNguyên nhân: Virus TYLCV qua bọ phấn trắng.\nTriệu chứng: Lá xoăn, vàng, cây kém phát triển.\nTác hại: Giảm năng suất nặng nề.",
+            "Yellow_Leaf_Curl_Virus": "🟣 **Bệnh xoăn vàng lá**\nNguyên nhân: Virus TYLCV qua bọ phấn trắng.\nTriệu chứng: Lá xoăn, vàng, cây kém phát triển.\nTác hại: Giảm năng suất nặng nề.",
             "healthy": "✅ **Lá khỏe mạnh**\nKhông có dấu hiệu bệnh lý. Màu xanh đều, không xoăn hay đốm."
         }
 
