@@ -44,8 +44,7 @@ st.markdown("""
 
 # --- Giao diện Streamlit ---
 st.set_page_config(page_title="Nhận diện bệnh lá cà chua", layout="centered")
-st.markdown('<div class="title">🍅 Ứng dụng Nhận diện Bệnh Lá Cà Chua</div>', unsafe_allow_html=True)
-st.markdown('<div class="subtitle">Sử dụng mô hình học sâu Vision Transformer huấn luyện trên Roboflow</div>', unsafe_allow_html=True)
+st.markdown('<div class="title">🍅 ỨNG DỤNG NHẬN DIỆN BỆNH QUA LÁ CÀ CHUA </div>', unsafe_allow_html=True)
 
 st.write("📤 Vui lòng tải ảnh lá cà chua (có thể bị bệnh hoặc khỏe mạnh) để tiến hành phân tích:")
 
