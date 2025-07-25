@@ -46,7 +46,7 @@ st.markdown("""
 st.set_page_config(page_title="Nhận diện bệnh lá cà chua", layout="centered")
 st.markdown('<div class="title">🍅 ỨNG DỤNG NHẬN DIỆN BỆNH QUA LÁ CÀ CHUA </div>', unsafe_allow_html=True)
 
-st.write("📤 Vui lòng bấm vào nút Browse files để tải lên ảnh lá cà chua (có thể bị bệnh hoặc khỏe mạnh) và hệ thống tự động cho kết quả:")
+st.write("📤 Vui lòng chụp hoặc tải lên ảnh lá cà chua (có thể lá khỏe hoặc bị bệnh)")
 
 tep_anh = st.file_uploader("Chọn ảnh (jpg, jpeg, png)", type=["jpg", "jpeg", "png"])
 
@@ -83,5 +83,4 @@ if tep_anh is not None:
         st.info(mo_ta_benh.get(ten_benh, "Không có mô tả chi tiết."))
     else:
         st.warning("⚠️ Không phát hiện bệnh nào.")
-else:
-    st.info("📥 Vui lòng tải ảnh lên để bắt đầu.")
+   
