@@ -44,7 +44,7 @@ st.set_page_config(page_title="Ứng dụng Nhận diện Bệnh Lá Cà Chua", 
 
 st.markdown("""
 <style>
-    @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700;900&display=swap');
 
     html, body, [class*="css"] {
         font-family: 'Roboto', sans-serif;
@@ -70,6 +70,18 @@ st.markdown("""
         font-weight: 700;
         text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
     }
+    
+    /* === CSS ĐÃ CẬP NHẬT ĐỂ LÀM NỔI BẬT NHÃN TẢI LÊN === */
+    section[data-testid="stFileUploader"] > label {
+        font-size: 24px !important;      /* Cỡ chữ lớn hơn */
+        font-weight: 900 !important;      /* Chữ đậm hơn (super bold) */
+        color: #c62828 !important;        /* Màu đỏ sẫm nổi bật */
+        text-align: center !important;
+        display: block;
+        line-height: 1.4 !important;
+    }
+    /* === KẾT THÚC CSS CẬP NHẬT === */
+
     .centered-text {
         text-align: center;
         font-size: 1.2em;
