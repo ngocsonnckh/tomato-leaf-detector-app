@@ -32,12 +32,12 @@ def du_doan_benh(anh):
 
 # --- Thông tin mô tả bệnh ---
 mo_ta_benh = {
-    "Bacterial_spot": "🔴 **Bệnh đốm vi khuẩn**\n* **Nguyên nhân:** Vi khuẩn Xanthomonas.\n* **Triệu chứng:** Đốm nhỏ đen/nâu, lá rách.\n* **Tác hại:** Giảm quang hợp, ảnh hưởng phát triển.",
-    "Late_blight": "🔵 **Mốc sương muộn**\n* **Nguyên nhân:** Nấm Phytophthora.\n* **Triệu chứng:** Mảng nâu đậm, viền vàng.\n* **Tác hại:** Gây héo, chết cây hàng loạt.",
-    "Leaf_Mold": "🟡 **Mốc lá**\n* **Nguyên nhân:** Nấm Cladosporium.\n* **Triệu chứng:** Đốm vàng, mốc xám.\n* **Tác hại:** Rụng lá sớm, giảm năng suất.",
-    "Septoria_leaf_spot": "🟠 **Đốm lá Septoria**\n* **Nguyên nhân:** Nấm Septoria.\n* **Triệu chứng:** Đốm tròn, viền sẫm.\n* **Tác hại:** Rụng lá, cây yếu.",
-    "Yellow_Leaf_Curl_Virus": "🟣 **Bệnh xoăn vàng lá**\n* **Nguyên nhân:** Virus TYLCV qua bọ phấn trắng.\n* **Triệu chứng:** Lá xoăn, vàng, cây kém phát triển.\n* **Tác hại:** Giảm năng suất nặng nề.",
-    "healthy": "✅ **Lá khỏe mạnh**\nKhông có dấu hiệu bệnh lý. Cây phát triển tốt, lá có màu xanh đều, không có biểu hiện xoăn hay đốm bất thường."
+    "Bacterial_spot": "🔴 **Bệnh đốm vi khuẩn**\n* **Nguyên nhân:** Vi khuẩn Xanthomonas.\n* **Triệu chứng:** Xuất hiện các đốm nhỏ màu đen hoặc nâu trên lá, sau đó lan rộng và làm lá bị rách.\n* **Tác hại:** : Làm giảm khả năng quang hợp, ảnh hưởng đến sự phát triển và năng suất cây cà chua.",
+    "Late_blight": "🔵 **Bệnh mốc sương muộn**\n* **Nguyên nhân:** Nấm Phytophthora infestans.\n* **Triệu chứng:** Các mảng màu nâu sẫm xuất hiện trên lá, thân và quả; có thể kèm theo viền màu vàng.\n* **Tác hại:** Lây lan rất nhanh trong điều kiện ẩm ướt, gây héo rũ và chết cây hàng loạt.",
+    "Leaf_Mold": "🟡 **Bệnh Mốc lá**\n* **Nguyên nhân:** Nấm Cladosporium fulvum.\n* **Triệu chứng:** Mặt trên lá có đốm vàng, mặt dưới có lớp mốc màu xám hoặc xanh ô liu.\n* **Tác hại:** Gây rụng lá sớm, ảnh hưởng nghiêm trọng đến năng suất.",
+    "Septoria_leaf_spot": "🟠 **Đốm lá Septoria**\n* **Nguyên nhân:** Nấm Septoria lycopersici.\n* **Triệu chứng:** Các đốm tròn nhỏ, màu nâu với viền sẫm, xuất hiện chủ yếu ở lá già.\n* **Tác hại:** Làm lá bị rụng sớm, cây sinh trưởng kém.",
+    "Yellow_Leaf_Curl_Virus": "🟣 **Bệnh xoăn vàng lá**\n* **Nguyên nhân:** Virus TYLCV lây qua bọ phấn trắng.\n* **Triệu chứng:** Lá non bị xoăn lại, chuyển vàng, cây còi cọc và ít ra hoa, đậu quả.\n* **Tác hại:** Làm giảm nghiêm trọng năng suất và chất lượng cà chua.",
+    "healthy": "✅ **Lá khỏe mạnh**\nKhông có dấu hiệu bệnh lý. Cây phát triển tốt, lá có màu xanh đều, không có biểu hiện xoăn, héo hay đốm bất thường."
 }
 
 # --- Cấu hình trang và CSS tùy chỉnh để làm đẹp giao diện ---
