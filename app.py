@@ -14,6 +14,7 @@ load_dotenv()
 # --- Cấu hình mô hình Roboflow ---
 # LƯU Ý QUAN TRỌNG: ROBOFLOW_API_KEY được lấy từ biến môi trường (từ file .env khi chạy cục bộ,
 # hoặc từ Streamlit Secrets khi triển khai lên Streamlit Cloud).
+# Bạn đã cung cấp API Key: rSUzaeMGYrBA449orJYK
 KHOA_API = os.getenv("ROBOFLOW_API_KEY")
 
 TEN_MO_HINH = "tomato-leaf-diseases-lmem9"
@@ -63,7 +64,7 @@ st.markdown("""
         margin: auto;
     }
     h1 {
-        color: #B22222;
+        color: #B22222; /* Màu đỏ nổi bật hơn (FireBrick) */
         text-align: center;
         margin-bottom: 1rem;
         font-size: 3em;
@@ -162,10 +163,13 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # --- Giao diện Streamlit ---
-st.title("🍅 ỨNG DỤNG AI NHẬN DIỆN BỆNH QUA LÁ CÀ CHUA  ")
+st.title("🍅 ỨNG DỤNG NHẬN DIỆN BỆNH QUA LÁ CÀ CHUA 🍃")
 
 # Sử dụng markdown để tạo nhãn tùy chỉnh, to, đậm và nổi bật
-st.markdown('<p class="upload-label"> Bấm vào trong khung bên dưới để chụp hoặc tải ảnh lá cà chua lên 👇</p>', unsafe_allow_html=True)
+st.markdown('<p class="upload-label">Bấm vào đây để chụp hoặc tải ảnh lá cà chua lên</p>', unsafe_allow_html=True)
+# Thêm icon bàn tay 👇 ở dòng riêng, căn giữa và bên dưới dòng chữ trên
+st.markdown('<p style="text-align: center; font-size: 1.5em; margin-top: -10px; margin-bottom: 10px;">👇</p>', unsafe_allow_html=True)
+
 
 # Ẩn nhãn mặc định của file_uploader và sử dụng nhãn tùy chỉnh ở trên
 tep_anh = st.file_uploader(
