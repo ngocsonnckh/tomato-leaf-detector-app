@@ -277,7 +277,8 @@ uploaded_image_data = components.html(
 
 # Xử lý dữ liệu ảnh được gửi từ JavaScript
 tep_anh = None
-if uploaded_image_data and uploaded_image_data.get('data'):
+# Kiểm tra nếu uploaded_image_data không phải là None và có chứa 'data'
+if uploaded_image_data and isinstance(uploaded_image_data, dict) and uploaded_image_data.get('data'):
     # Chuyển đổi base64 data URL thành bytes
     base64_string = uploaded_image_data['data'].split(',')[1]
     image_bytes = base64.b64decode(base64_string)
