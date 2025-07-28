@@ -187,6 +187,14 @@ st.markdown("""
         color: #777;
         font-size: 0.9em;
     }
+
+    /* Đã loại bỏ CSS để đặt icon bàn tay dưới dòng chữ chính trong label */
+    /* .stFileUploader label::after {
+        content: "👇";
+        display: block;
+        font-size: 1.5em;
+        margin-top: 5px;
+    } */
 </style>
 """, unsafe_allow_html=True)
 
