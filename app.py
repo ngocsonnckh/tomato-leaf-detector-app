@@ -111,7 +111,7 @@ st.markdown("""
 
     /* Chèn văn bản "Duyệt tệp" vào nút */
     .stFileUploader [data-testid="stFileUploaderDropzone"] button::after {
-        content: "Duyệt tệp";
+        content: ""; /* Đã thay đổi thành rỗng để ẩn văn bản "Duyệt tệp" */
         visibility: visible;
         position: absolute;
         top: 50%;
@@ -192,7 +192,8 @@ st.markdown("""
 
 # --- Giao diện Streamlit ---
 st.title("🍅 ỨNG DỤNG NHẬN DIỆN BỆNH QUA LÁ CÀ CHUA 🍃")
-st.markdown('<p class="centered-text">Vui lòng chụp hoặc tải lên ảnh lá cà chua (có thể là lá khỏe hoặc bị bệnh) 🌱</p>', unsafe_allow_html=True)
+# Đã bỏ dòng chữ "Vui lòng chụp hoặc tải lên ảnh lá cà chua (có thể là lá khỏe hoặc bị bệnh) 🌱"
+# st.markdown('<p class="centered-text">Vui lòng chụp hoặc tải lên ảnh lá cà chua (có thể là lá khỏe hoặc bị bệnh) 🌱</p>', unsafe_allow_html=True)
 
 # Sử dụng label của st.file_uploader cho văn bản chính
 tep_anh = st.file_uploader(
