@@ -146,11 +146,10 @@ st.markdown("""
 
 # --- Giao diện Streamlit ---
 st.title("🍅 ỨNG DỤNG NHẬN DIỆN BỆNH QUA LÁ CÀ CHUA 🍃")
-st.markdown('<p class="centered-text">Vui lòng chụp hoặc tải lên ảnh lá cà chua (có thể là lá khỏe hoặc bị bệnh) 🌱</p>', unsafe_allow_html=True)
 
 # Cập nhật phần tải tệp lên với văn bản tiếng Việt đơn giản, dễ hiểu hơn
 tep_anh = st.file_uploader(
-    label="👇 Bấm vào đây để tải ảnh lá cà chua lên",
+    label="👇 Bấm vào đây để chụp hoặc tải ảnh lá cà chua lên",
     type=["jpg", "jpeg", "png"],
     help="Hỗ trợ các định dạng: JPG, JPEG, PNG. Dung lượng tối đa 200MB."
 )
