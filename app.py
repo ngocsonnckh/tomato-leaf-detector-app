@@ -40,7 +40,7 @@ mo_ta_benh = {
 }
 
 # --- Cấu hình trang và CSS tùy chỉnh để làm đẹp giao diện ---
-st.set_page_config(page_title="Ứng dụng Nhận diện Bệnh Lá Cà Chua", page_icon="🍅", layout="centered")
+st.set_page_config(page_title="Ứng dụng Nhận diện Bệnh Lá Cà Chua", page_icon="�", layout="centered")
 
 st.markdown("""
 <style>
@@ -71,14 +71,15 @@ st.markdown("""
         text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
     }
     
-    /* === CSS ĐÃ CẬP NHẬT ĐỂ LÀM NỔI BẬT NHÃN TẢI LÊN === */
-    section[data-testid="stFileUploader"] > label {
-        font-size: 24px !important;      /* Cỡ chữ lớn hơn */
-        font-weight: 900 !important;      /* Chữ đậm hơn (super bold) */
-        color: #c62828 !important;        /* Màu đỏ sẫm nổi bật */
+    /* === CSS CHO NHÃN TÙY CHỈNH CỦA KHUNG TẢI LÊN === */
+    .upload-label {
+        font-size: 24px !important;
+        font-weight: 900 !important;
+        color: #c62828 !important;
         text-align: center !important;
-        display: block;
         line-height: 1.4 !important;
+        display: block;
+        margin-bottom: 10px; /* Thêm khoảng cách với khung bên dưới */
     }
     /* === KẾT THÚC CSS CẬP NHẬT === */
 
@@ -159,12 +160,17 @@ st.markdown("""
 # --- Giao diện Streamlit ---
 st.title("🍅 ỨNG DỤNG NHẬN DIỆN BỆNH QUA LÁ CÀ CHUA 🍃")
 
-# Cập nhật phần tải tệp lên với văn bản tiếng Việt đơn giản, dễ hiểu hơn
+# Sử dụng markdown để tạo nhãn tùy chỉnh, to, đậm và nổi bật
+st.markdown('<p class="upload-label">👇 Bấm vào đây để chụp hoặc tải ảnh lá cà chua lên</p>', unsafe_allow_html=True)
+
+# Ẩn nhãn mặc định của file_uploader và sử dụng nhãn tùy chỉnh ở trên
 tep_anh = st.file_uploader(
-    label="👇 Bấm vào đây để chụp hoặc tải ảnh lá cà chua lên",
+    label="Tải ảnh lên", # Dòng chữ này sẽ không hiển thị
     type=["jpg", "jpeg", "png"],
-    help="Hỗ trợ các định dạng: JPG, JPEG, PNG. Dung lượng tối đa 200MB."
+    help="Hỗ trợ các định dạng: JPG, JPEG, PNG. Dung lượng tối đa 200MB.",
+    label_visibility="collapsed" # Thuộc tính quan trọng để ẩn nhãn mặc định
 )
+
 
 if tep_anh is not None:
     anh = Image.open(tep_anh).convert("RGB")
