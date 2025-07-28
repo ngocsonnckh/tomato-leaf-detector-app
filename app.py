@@ -158,53 +158,38 @@ st.markdown("""
     /* CSS để ẩn văn bản tiếng Anh mặc định và thay thế bằng tiếng Việt */
     /* Target the "Drag and drop file here" text inside the uploader */
     .stFileUploader [data-testid="stFileUploaderDropzone"] p:first-child {
-        visibility: hidden; /* Ẩn văn bản gốc */
-        position: relative;
+        display: none !important; /* Ẩn văn bản gốc hoàn toàn */
     }
-    .stFileUploader [data-testid="stFileUploaderDropzone"] p:first-child::after {
+    .stFileUploader [data-testid="stFileUploaderDropzone"] > div:first-child::before { /* Target div chứa p tag */
         content: "Kéo và thả tệp vào đây"; /* Chèn văn bản tiếng Việt */
-        visibility: visible;
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
+        display: block;
         text-align: center;
         color: #333; /* Đảm bảo dễ đọc */
         font-weight: bold; /* In đậm */
-        font-size: 1em; /* Kích thước phù hợp */
+        font-size: 1.2em; /* Kích thước phù hợp */
+        margin-bottom: 5px; /* Khoảng cách dưới */
     }
 
     /* Target the "Limit 200MB per file • JPG, JPEG, PNG" text */
     .stFileUploader [data-testid="stFileUploaderDropzone"] p:last-child {
-        visibility: hidden; /* Ẩn văn bản gốc */
-        position: relative;
+        display: none !important; /* Ẩn văn bản gốc hoàn toàn */
     }
-    .stFileUploader [data-testid="stFileUploaderDropzone"] p:last-child::after {
+    .stFileUploader [data-testid="stFileUploaderDropzone"] > div:first-child::after { /* Target div chứa p tag */
         content: "Giới hạn 200MB mỗi tệp (JPG, JPEG, PNG)"; /* Chèn văn bản tiếng Việt */
-        visibility: visible;
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
+        display: block;
         text-align: center;
         color: #555; /* Đảm bảo dễ đọc */
         font-size: 0.9em; /* Kích thước phù hợp */
+        margin-top: 5px; /* Khoảng cách trên */
     }
 
     /* Target the "Browse files" button text */
     .stFileUploader [data-testid="stFileUploaderDropzone"] button span {
-        visibility: hidden; /* Ẩn văn bản gốc */
-        position: relative;
+        display: none !important; /* Ẩn văn bản gốc */
     }
-    .stFileUploader [data-testid="stFileUploaderDropzone"] button span::after {
+    .stFileUploader [data-testid="stFileUploaderDropzone"] button::after {
         content: "Duyệt tệp"; /* Chèn văn bản tiếng Việt */
-        visibility: visible;
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        text-align: center;
-        color: white; /* Đảm bảo dễ đọc trên nút */
+        color: white;
         font-weight: bold;
         font-size: 1em; /* Kích thước phù hợp */
     }
