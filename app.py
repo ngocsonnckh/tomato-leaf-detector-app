@@ -210,35 +210,30 @@ custom_uploader_html = """
     const customUploader = document.getElementById('customUploader');
     const fileNameDisplay = document.getElementById('fileNameDisplay');
 
+    // Hàm để gửi dữ liệu về Streamlit
+    function sendDataToStreamlit(fileData, fileName, fileType) {
+        if (window.Streamlit) {
+            window.Streamlit.setComponentValue({
+                data: fileData, // Base64 encoded image
+                name: fileName,
+                type: fileType
+            });
+        } else {
+            console.error("Streamlit object not found. Cannot send data.");
+        }
+    }
+
     fileInput.addEventListener('change', function(event) {
         const file = event.target.files[0];
         if (file) {
-            // Gửi dữ liệu file về Streamlit
             const reader = new FileReader();
             reader.onload = function(e) {
-                // Streamlit component communication
-                window.parent.postMessage({
-                    type: 'streamlit:setComponentValue',
-                    args: {
-                        key: 'uploaded_image_data', // Key để Streamlit nhận dữ liệu
-                        value: {
-                            data: e.target.result, // Base64 encoded image
-                            name: file.name,
-                            type: file.type
-                        }
-                    },
-                }, '*');
+                sendDataToStreamlit(e.target.result, file.name, file.type);
                 fileNameDisplay.textContent = `Đã chọn: ${file.name} (${(file.size / 1024 / 1024).toFixed(2)} MB)`;
             };
             reader.readAsDataURL(file);
         } else {
-            window.parent.postMessage({
-                type: 'streamlit:setComponentValue',
-                args: {
-                    key: 'uploaded_image_data',
-                    value: null
-                },
-            }, '*');
+            sendDataToStreamlit(null, null, null); // Gửi null khi không có file
             fileNameDisplay.textContent = '';
         }
     });
@@ -265,6 +260,15 @@ custom_uploader_html = """
             fileInput.dispatchEvent(new Event('change')); // Trigger change event
         }
     });
+
+    // Gửi giá trị null ban đầu khi component được tải để Streamlit nhận biết
+    // và tránh lỗi TypeError khi uploaded_image_data chưa có giá trị.
+    if (window.Streamlit) {
+        window.Streamlit.setComponentValue(null);
+    } else {
+        // Fallback or warning if Streamlit is not ready
+        console.warn("Streamlit is not ready yet. Initial component value not set.");
+    }
 </script>
 """
 # Nhúng thành phần tùy chỉnh vào Streamlit
