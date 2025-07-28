@@ -14,22 +14,22 @@ load_dotenv()
 # --- Cấu hình mô hình Roboflow ---
 # LƯU Ý QUAN TRỌNG: ROBOFLOW_API_KEY được lấy từ biến môi trường (từ file .env khi chạy cục bộ,
 # hoặc từ Streamlit Secrets khi triển khai lên Streamlit Cloud).
-# Bạn đã cung cấp API Key: rSUzaeMGYrBA449orJYK
 KHOA_API = os.getenv("ROBOFLOW_API_KEY")
 
 TEN_MO_HINH = "tomato-leaf-diseases-lmem9"
 PHIEN_BAN = "1"
 DIA_CHI_API = f"https://detect.roboflow.com/{TEN_MO_HINH}/{PHIEN_BAN}?api_key={KHOA_API}"
 
-# --- Hàm xử lý ảnh và gửi đến Roboflow (giữ nguyên từ file gốc của bạn) ---
+# --- Hàm xử lý ảnh và gửi đến Roboflow ---
 def du_doan_benh(anh):
+    """Gửi ảnh đến API Roboflow để nhận dạng."""
     bo_dem = io.BytesIO()
     anh.save(bo_dem, quality=90, format="JPEG")
     anh_mahoa = base64.b64encode(bo_dem.getvalue()).decode("utf-8")
     phan_hoi = requests.post(DIA_CHI_API, data=anh_mahoa, headers={"Content-Type": "application/x-www-form-urlencoded"})
     return phan_hoi.json()
 
-# --- Thông tin mô tả bệnh (giữ nguyên từ file gốc của bạn, có thể bổ sung thêm) ---
+# --- Thông tin mô tả bệnh ---
 mo_ta_benh = {
     "Bacterial_spot": "🔴 **Bệnh đốm vi khuẩn**\nNguyên nhân: Vi khuẩn Xanthomonas.\nTriệu chứng: Đốm nhỏ đen/nâu, lá rách.\nTác hại: Giảm quang hợp, ảnh hưởng phát triển.",
     "Late_blight": "🔵 **Mốc sương muộn**\nNguyên nhân: Nấm Phytophthora.\nTriệu chứng: Mảng nâu đậm, viền vàng.\nTác hại: Gây héo, chết cây hàng loạt.",
@@ -40,7 +40,7 @@ mo_ta_benh = {
 }
 
 # --- Cấu hình trang và CSS tùy chỉnh để làm đẹp giao diện ---
-st.set_page_config(page_title="Ứng dụng Nhận diện Bệnh Lá Cà Chua", page_icon="🍅", layout="centered") # Đã thay icon trang
+st.set_page_config(page_title="Ứng dụng Nhận diện Bệnh Lá Cà Chua", page_icon="🍅", layout="centered")
 
 st.markdown("""
 <style>
@@ -49,38 +49,38 @@ st.markdown("""
     html, body, [class*="css"] {
         font-family: 'Roboto', sans-serif;
         color: #333;
-        font-size: 1.1em; /* Tăng kích thước font chữ cơ bản */
+        font-size: 1.1em;
     }
     .stApp {
-        background-color: #f0f2f6; /* Màu nền nhẹ nhàng */
+        background-color: #f0f2f6;
     }
     .main .block-container {
         padding-top: 2rem;
         padding-bottom: 2rem;
         padding-left: 1rem;
         padding-right: 1rem;
-        max-width: 700px; /* Giới hạn chiều rộng nội dung */
+        max-width: 700px;
         margin: auto;
     }
     h1 {
-        color: #B22222; /* Màu đỏ nổi bật hơn (FireBrick) */
+        color: #B22222;
         text-align: center;
         margin-bottom: 1rem;
-        font-size: 3em; /* Tăng kích thước tiêu đề lớn hơn */
-        font-weight: 700; /* Đảm bảo độ đậm */
+        font-size: 3em;
+        font-weight: 700;
         text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
     }
-    .centered-text { /* CSS mới để căn giữa văn bản */
+    .centered-text {
         text-align: center;
-        font-size: 1.2em; /* Tăng kích thước chữ cho mô tả */
-        margin-bottom: 1.5rem; /* Khoảng cách dưới */
+        font-size: 1.2em;
+        margin-bottom: 1.5rem;
     }
     .stFileUploader {
-        border: 2px dashed #a7d9b5; /* Viền nét đứt màu xanh */
+        border: 2px dashed #a7d9b5;
         border-radius: 10px;
         padding: 20px;
         text-align: center;
-        background-color: #e6ffe6; /* Nền xanh nhạt */
+        background-color: #e6ffe6;
         transition: all 0.3s ease-in-out;
     }
     .stFileUploader:hover {
@@ -88,7 +88,7 @@ st.markdown("""
         background-color: #d4ffd4;
     }
     .stFileUploader > div > button {
-        background-color: #28a745; /* Nút Browse files */
+        background-color: #28a745;
         color: white;
         border-radius: 8px;
         padding: 10px 20px;
@@ -103,48 +103,35 @@ st.markdown("""
         box-shadow: 0 4px 8px rgba(0,0,0,0.1);
     }
     .stSpinner > div > div {
-        color: #28a745 !important; /* Màu spinner */
+        color: #28a745 !important;
+    }
+    .stSuccess, .stInfo, .stWarning, .stError {
+        border-radius: 5px;
+        padding: 10px;
+        margin-top: 15px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        font-size: 1.1em;
     }
     .stSuccess {
         background-color: #d4edda;
         color: #155724;
         border-left: 5px solid #28a745;
-        border-radius: 5px;
-        padding: 10px;
-        margin-top: 15px;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-        font-size: 1.1em; /* Tăng kích thước font */
-        font-weight: bold; /* Đảm bảo đậm */
+        font-weight: bold;
     }
     .stInfo {
         background-color: #d1ecf1;
         color: #0c5460;
         border-left: 5px solid #17a2b8;
-        border-radius: 5px;
-        padding: 10px;
-        margin-top: 15px;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-        font-size: 1.1em; /* Tăng kích thước font */
     }
     .stWarning {
         background-color: #fff3cd;
         color: #856404;
         border-left: 5px solid #ffc107;
-        border-radius: 5px;
-        padding: 10px;
-        margin-top: 15px;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-        font-size: 1.1em; /* Tăng kích thước font */
     }
     .stError {
         background-color: #f8d7da;
         color: #721c24;
         border-left: 5px solid #dc3545;
-        border-radius: 5px;
-        padding: 10px;
-        margin-top: 15px;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-        font-size: 1.1em; /* Tăng kích thước font */
     }
     .footer {
         text-align: center;
@@ -159,20 +146,18 @@ st.markdown("""
 
 # --- Giao diện Streamlit ---
 st.title("🍅 ỨNG DỤNG NHẬN DIỆN BỆNH QUA LÁ CÀ CHUA 🍃")
-# Đã thêm class 'centered-text' để căn giữa dòng này
 st.markdown('<p class="centered-text">Vui lòng chụp hoặc tải lên ảnh lá cà chua (có thể là lá khỏe hoặc bị bệnh) 🌱</p>', unsafe_allow_html=True)
 
+# Cập nhật phần tải tệp lên với văn bản tiếng Việt
 tep_anh = st.file_uploader(
-    "Kéo và thả tệp vào đây hoặc nhấp để duyệt",
+    label="Kéo và thả tệp vào đây hoặc nhấn vào nút 'Duyệt tệp'",
     type=["jpg", "jpeg", "png"],
-    label_visibility="collapsed",
-    help="Giới hạn 200MB mỗi tệp"
+    help="Hỗ trợ các định dạng: JPG, JPEG, PNG. Dung lượng tối đa 200MB."
 )
 
 if tep_anh is not None:
     anh = Image.open(tep_anh).convert("RGB")
-    # Đã thay use_column_width thành use_container_width để loại bỏ cảnh báo và đảm bảo hiển thị tốt
-    st.image(anh, caption="📷 Ảnh đã tải lên", use_container_width=True) 
+    st.image(anh, caption="📷 Ảnh đã tải lên", use_container_width=True)
 
     with st.spinner("🔍 Đang phân tích... Vui lòng chờ ⏳"):
         ket_qua = du_doan_benh(anh)
@@ -183,7 +168,7 @@ if tep_anh is not None:
         ten_benh_goc = benh["class"]
         do_tin_cay = round(benh["confidence"] * 100, 2)
 
-        # Định dạng tên bệnh để hiển thị đẹp hơn (ví dụ: "Bacterial_spot" -> "Bacterial Spot")
+        # Định dạng tên bệnh để hiển thị đẹp hơn
         formatted_ten_benh = ' '.join([word.capitalize() for word in ten_benh_goc.split('_')])
 
         st.success(f"✅ Phát hiện: **{formatted_ten_benh}** (Độ tin cậy: {do_tin_cay:.1f}%)")
@@ -191,8 +176,8 @@ if tep_anh is not None:
         # Hiển thị mô tả bệnh
         st.info(f"💡 **Thông tin bệnh:** {mo_ta_benh.get(ten_benh_goc, 'Không có mô tả chi tiết cho loại bệnh này.')}")
     else:
-        st.warning("🥺 Không phát hiện bệnh nào. Vui lòng thử ảnh khác hoặc đảm bảo ảnh rõ ràng.")
+        st.warning("🥺 Không phát hiện được bệnh nào. Vui lòng thử ảnh khác hoặc đảm bảo ảnh rõ ràng.")
 
-# Thêm một số khoảng trống và footer cuối cùng
+# Thêm footer
 st.markdown("---")
 st.markdown('<div class="footer">Dự án được thực hiện bởi nhóm nghiên cứu AI.</div>', unsafe_allow_html=True)
