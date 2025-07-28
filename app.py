@@ -187,29 +187,26 @@ st.markdown("""
         color: #777;
         font-size: 0.9em;
     }
-
-    /* CSS mới để đặt icon bàn tay dưới dòng chữ chính */
-    .stFileUploader label::after {
-        content: "👇"; /* Icon bàn tay */
-        display: block;
-        font-size: 1.5em; /* Kích thước icon */
-        margin-top: 5px; /* Khoảng cách với văn bản */
-    }
 </style>
 """, unsafe_allow_html=True)
 
 # --- Giao diện Streamlit ---
 st.title("🍅 ỨNG DỤNG NHẬN DIỆN BỆNH QUA LÁ CÀ CHUA 🍃")
-# Đã bỏ dòng chữ "Vui lòng chụp hoặc tải lên ảnh lá cà chua (có thể là lá khỏe hoặc bị bệnh) 🌱"
-# st.markdown('<p class="centered-text">Vui lòng chụp hoặc tải lên ảnh lá cà chua (có thể là lá khỏe hoặc bị bệnh) 🌱</p>', unsafe_allow_html=True)
 
-# Sử dụng label của st.file_uploader cho văn bản chính
+# Sử dụng markdown để tạo nhãn tùy chỉnh, to, đậm và nổi bật
+st.markdown('<p class="upload-label">Bấm vào đây để chụp hoặc tải ảnh lá cà chua lên</p>', unsafe_allow_html=True)
+# Thêm icon bàn tay 👇 ở dòng riêng, căn giữa và bên dưới dòng chữ trên
+st.markdown('<p style="text-align: center; font-size: 1.5em; margin-top: -10px; margin-bottom: 10px;">👇</p>', unsafe_allow_html=True)
+
+
+# Ẩn nhãn mặc định của file_uploader và sử dụng nhãn tùy chỉnh ở trên
 tep_anh = st.file_uploader(
-    label="Bấm vào đây để chụp hoặc tải ảnh lá cà chua lên", # Văn bản chính nằm trong khung
+    label="Tải ảnh lên", # Dòng chữ này sẽ không hiển thị
     type=["jpg", "jpeg", "png"],
-    help="Hỗ trợ các định dạng: JPG, JPEG, PNG. Dung lượng tối đa 200MB.", # Help text này sẽ tự động ẩn khi label_visibility không phải "visible"
-    # label_visibility="visible" (Mặc định là visible, không cần ghi rõ nếu muốn hiển thị)
+    help="Hỗ trợ các định dạng: JPG, JPEG, PNG. Dung lượng tối đa 200MB.",
+    label_visibility="collapsed" # Thuộc tính quan trọng để ẩn nhãn mặc định
 )
+
 
 if tep_anh is not None:
     anh = Image.open(tep_anh).convert("RGB")
