@@ -41,7 +41,7 @@ mo_ta_benh = {
 }
 
 # --- Cấu hình trang và CSS tùy chỉnh để làm đẹp giao diện ---
-st.set_page_config(page_title="Ứng dụng Nhận diện Bệnh Lá Cà Chua", page_icon="🍅", layout="centered")
+st.set_page_config(page_title="Ứng dụng Nhận diện Bệnh Lá Cà Chua", page_icon="�", layout="centered")
 
 st.markdown("""
 <style>
@@ -98,9 +98,6 @@ st.markdown("""
         background-color: #d4ffd4;
     }
 
-    /* Ẩn nhãn mặc định của Streamlit (nếu không dùng label_visibility="collapsed") */
-    /* .stFileUploader label { display: none !important; } */ /* Đã bỏ vì label_visibility="collapsed" đã xử lý */
-
     /* Ẩn văn bản "Drag and drop file here" và "Limit 200MB per file..." */
     .stFileUploader [data-testid="stFileUploaderDropzone"] p {
         display: none !important;
@@ -110,24 +107,6 @@ st.markdown("""
     .stFileUploader [data-testid="stFileUploaderDropzone"] button span {
         visibility: hidden; /* Ẩn văn bản gốc */
         position: relative;
-    }
-
-    /* Chèn văn bản chính vào trong khung */
-    .stFileUploader [data-testid="stFileUploaderDropzone"]::before {
-        content: "👇 Bấm vào đây để chụp hoặc tải ảnh lá cà chua lên";
-        font-size: 24px !important;
-        font-weight: 900 !important;
-        color: #c62828 !important; /* Màu đỏ nổi bật */
-        text-align: center !important;
-        line-height: 1.4 !important;
-        display: block;
-        margin-bottom: 10px; /* Khoảng cách với nút */
-        position: absolute;
-        top: 30%; /* Điều chỉnh vị trí */
-        left: 50%;
-        transform: translate(-50%, -50%);
-        width: 90%; /* Giới hạn chiều rộng */
-        z-index: 1; /* Đảm bảo nằm trên các phần tử khác */
     }
 
     /* Chèn văn bản "Duyệt tệp" vào nút */
@@ -144,22 +123,6 @@ st.markdown("""
         z-index: 2; /* Đảm bảo nằm trên nút */
     }
 
-    /* Chèn văn bản giới hạn tệp */
-    .stFileUploader [data-testid="stFileUploaderDropzone"]::after {
-        content: "Hỗ trợ các định dạng: JPG, JPEG, PNG. Dung lượng tối đa 200MB.";
-        font-size: 0.9em;
-        color: #555;
-        text-align: center;
-        display: block;
-        position: absolute;
-        bottom: 10px; /* Điều chỉnh vị trí */
-        left: 50%;
-        transform: translateX(-50%);
-        width: 90%;
-        z-index: 1;
-    }
-
-
     .stFileUploader > div > button {
         background-color: #28a745;
         color: white;
@@ -169,7 +132,7 @@ st.markdown("""
         transition: background-color 0.3s ease;
         position: relative; /* Để ::after có thể định vị */
         overflow: hidden; /* Đảm bảo text không tràn ra ngoài */
-        margin-top: 50px; /* Tạo khoảng cách đủ lớn để văn bản chính nằm trên */
+        margin-top: 20px; /* Khoảng cách với label */
         z-index: 2; /* Đảm bảo nút nằm trên các pseudo-element khác */
     }
     .stFileUploader > div > button:hover {
@@ -231,12 +194,12 @@ st.markdown("""
 st.title("🍅 ỨNG DỤNG NHẬN DIỆN BỆNH QUA LÁ CÀ CHUA ") # Đã thay đổi icon
 st.markdown('<p class="centered-text">Vui lòng chụp hoặc tải lên ảnh lá cà chua (có thể là lá khỏe hoặc bị bệnh) 🌱</p>', unsafe_allow_html=True)
 
-# Sử dụng label_visibility="collapsed" và CSS để chèn văn bản
+# Sử dụng label của st.file_uploader cho văn bản chính
 tep_anh = st.file_uploader(
-    label="Tải ảnh lên", # Label này sẽ bị ẩn bởi label_visibility="collapsed"
+    label="👇 Bấm vào đây để chụp hoặc tải ảnh lá cà chua lên", # Văn bản chính nằm trong khung
     type=["jpg", "jpeg", "png"],
-    help="Hỗ trợ các định dạng: JPG, JPEG, PNG. Dung lượng tối đa 200MB.", # Help text này sẽ bị ẩn bởi CSS
-    label_visibility="collapsed"
+    help="Hỗ trợ các định dạng: JPG, JPEG, PNG. Dung lượng tối đa 200MB.", # Help text này sẽ tự động ẩn khi label_visibility không phải "visible"
+    # label_visibility="visible" (Mặc định là visible, không cần ghi rõ nếu muốn hiển thị)
 )
 
 if tep_anh is not None:
