@@ -163,10 +163,10 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # --- Giao diện Streamlit ---
-st.title("🍅 ỨNG DỤNG NHẬN DIỆN BỆNH QUA LÁ CÀ CHUA 🍃")
+st.title("🍅 ỨNG DỤNG AI NHẬN DIỆN BỆNH QUA LÁ CÀ CHUA 🍃")
 
 # Sử dụng markdown để tạo nhãn tùy chỉnh, to, đậm và nổi bật
-st.markdown('<p class="upload-label">Bấm vào đây để chụp hoặc tải ảnh lá cà chua lên</p>', unsafe_allow_html=True)
+st.markdown('<p class="upload-label">Bấm vào khung bên dưới để chụp hoặc tải ảnh lá cà chua lên</p>', unsafe_allow_html=True)
 # Thêm icon bàn tay 👇 ở dòng riêng, căn giữa và bên dưới dòng chữ trên
 st.markdown('<p style="text-align: center; font-size: 1.5em; margin-top: -10px; margin-bottom: 10px;">👇</p>', unsafe_allow_html=True)
 
