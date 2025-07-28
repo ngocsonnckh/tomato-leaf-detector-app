@@ -154,6 +154,60 @@ st.markdown("""
         color: #777;
         font-size: 0.9em;
     }
+
+    /* CSS để ẩn văn bản tiếng Anh mặc định và thay thế bằng tiếng Việt */
+    /* Target the "Drag and drop file here" text inside the uploader */
+    .stFileUploader [data-testid="stFileUploaderDropzone"] p:first-child {
+        visibility: hidden; /* Ẩn văn bản gốc */
+        position: relative;
+    }
+    .stFileUploader [data-testid="stFileUploaderDropzone"] p:first-child::after {
+        content: "Kéo và thả tệp vào đây"; /* Chèn văn bản tiếng Việt */
+        visibility: visible;
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        text-align: center;
+        color: #333; /* Đảm bảo dễ đọc */
+        font-weight: bold; /* In đậm */
+        font-size: 1em; /* Kích thước phù hợp */
+    }
+
+    /* Target the "Limit 200MB per file • JPG, JPEG, PNG" text */
+    .stFileUploader [data-testid="stFileUploaderDropzone"] p:last-child {
+        visibility: hidden; /* Ẩn văn bản gốc */
+        position: relative;
+    }
+    .stFileUploader [data-testid="stFileUploaderDropzone"] p:last-child::after {
+        content: "Giới hạn 200MB mỗi tệp (JPG, JPEG, PNG)"; /* Chèn văn bản tiếng Việt */
+        visibility: visible;
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        text-align: center;
+        color: #555; /* Đảm bảo dễ đọc */
+        font-size: 0.9em; /* Kích thước phù hợp */
+    }
+
+    /* Target the "Browse files" button text */
+    .stFileUploader [data-testid="stFileUploaderDropzone"] button span {
+        visibility: hidden; /* Ẩn văn bản gốc */
+        position: relative;
+    }
+    .stFileUploader [data-testid="stFileUploaderDropzone"] button span::after {
+        content: "Duyệt tệp"; /* Chèn văn bản tiếng Việt */
+        visibility: visible;
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        text-align: center;
+        color: white; /* Đảm bảo dễ đọc trên nút */
+        font-weight: bold;
+        font-size: 1em; /* Kích thước phù hợp */
+    }
 </style>
 """, unsafe_allow_html=True)
 
@@ -162,15 +216,14 @@ st.title("🍅 ỨNG DỤNG NHẬN DIỆN BỆNH QUA LÁ CÀ CHUA 🍃")
 st.markdown('<p class="centered-text">Vui lòng chụp hoặc tải lên ảnh lá cà chua (có thể là lá khỏe hoặc bị bệnh) 🌱</p>', unsafe_allow_html=True)
 
 tep_anh = st.file_uploader(
-    "Kéo và thả tệp vào đây hoặc nhấp để duyệt",
+    "Kéo và thả tệp vào đây hoặc nhấp để duyệt", # Tham số này không còn hiển thị trực tiếp do CSS tùy chỉnh
     type=["jpg", "jpeg", "png"],
-    label_visibility="collapsed",
-    help="Giới hạn 200MB mỗi tệp"
+    label_visibility="collapsed", # Ẩn nhãn mặc định để phù hợp với giao diện ảnh mẫu
+    help="Giới hạn 200MB mỗi tệp" # Tham số này không còn hiển thị trực tiếp do CSS tùy chỉnh
 )
 
 if tep_anh is not None:
     anh = Image.open(tep_anh).convert("RGB")
-    # Đã thay use_column_width thành use_container_width để loại bỏ cảnh báo và đảm bảo hiển thị tốt
     st.image(anh, caption="📷 Ảnh đã tải lên", use_container_width=True) 
 
     with st.spinner("🔍 Đang phân tích... Vui lòng chờ ⏳"):
