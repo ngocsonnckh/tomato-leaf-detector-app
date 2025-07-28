@@ -5,7 +5,6 @@ import io
 import base64
 import os
 from dotenv import load_dotenv # Import thư viện dotenv
-import streamlit.components.v1 as components # Import components để nhúng HTML/JS
 
 # --- Tải biến môi trường từ file .env ---
 # Chỉ dùng khi chạy cục bộ. Khi triển khai lên Streamlit Cloud,
@@ -22,7 +21,7 @@ TEN_MO_HINH = "tomato-leaf-diseases-lmem9"
 PHIEN_BAN = "1"
 DIA_CHI_API = f"https://detect.roboflow.com/{TEN_MO_HINH}/{PHIEN_BAN}?api_key={KHOA_API}"
 
-# --- Hàm xử lý ảnh và gửi đến Roboflow ---
+# --- Hàm xử lý ảnh và gửi đến Roboflow (giữ nguyên từ file gốc của bạn) ---
 def du_doan_benh(anh):
     bo_dem = io.BytesIO()
     anh.save(bo_dem, quality=90, format="JPEG")
@@ -30,7 +29,7 @@ def du_doan_benh(anh):
     phan_hoi = requests.post(DIA_CHI_API, data=anh_mahoa, headers={"Content-Type": "application/x-www-form-urlencoded"})
     return phan_hoi.json()
 
-# --- Thông tin mô tả bệnh ---
+# --- Thông tin mô tả bệnh (giữ nguyên từ file gốc của bạn, có thể bổ sung thêm) ---
 mo_ta_benh = {
     "Bacterial_spot": "🔴 **Bệnh đốm vi khuẩn**\nNguyên nhân: Vi khuẩn Xanthomonas.\nTriệu chứng: Đốm nhỏ đen/nâu, lá rách.\nTác hại: Giảm quang hợp, ảnh hưởng phát triển.",
     "Late_blight": "🔵 **Mốc sương muộn**\nNguyên nhân: Nấm Phytophthora.\nTriệu chứng: Mảng nâu đậm, viền vàng.\nTác hại: Gây héo, chết cây hàng loạt.",
@@ -41,7 +40,7 @@ mo_ta_benh = {
 }
 
 # --- Cấu hình trang và CSS tùy chỉnh để làm đẹp giao diện ---
-st.set_page_config(page_title="Ứng dụng Nhận diện Bệnh Lá Cà Chua", page_icon="🍅", layout="centered")
+st.set_page_config(page_title="Ứng dụng Nhận diện Bệnh Lá Cà Chua", page_icon="🍅", layout="centered") # Đã thay icon trang
 
 st.markdown("""
 <style>
@@ -76,61 +75,29 @@ st.markdown("""
         font-size: 1.2em; /* Tăng kích thước chữ cho mô tả */
         margin-bottom: 1.5rem; /* Khoảng cách dưới */
     }
-    /* CSS cho custom uploader */
-    .custom-uploader-container {
-        border: 2px dashed #a7d9b5;
+    .stFileUploader {
+        border: 2px dashed #a7d9b5; /* Viền nét đứt màu xanh */
         border-radius: 10px;
         padding: 20px;
         text-align: center;
-        background-color: #e6ffe6;
+        background-color: #e6ffe6; /* Nền xanh nhạt */
         transition: all 0.3s ease-in-out;
-        cursor: pointer;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        min-height: 150px; /* Chiều cao tối thiểu */
-        position: relative;
-        overflow: hidden; /* Để ẩn input file gốc */
     }
-    .custom-uploader-container:hover {
+    .stFileUploader:hover {
         border-color: #28a745;
         background-color: #d4ffd4;
     }
-    .custom-uploader-container input[type="file"] {
-        position: absolute;
-        width: 100%;
-        height: 100%;
-        top: 0;
-        left: 0;
-        opacity: 0; /* Ẩn input file gốc */
-        cursor: pointer;
-    }
-    .custom-uploader-text-main {
-        font-weight: bold;
-        font-size: 1.2em;
-        color: #333;
-        margin-bottom: 5px;
-    }
-    .custom-uploader-text-limit {
-        font-size: 0.9em;
-        color: #555;
-        margin-top: 5px;
-    }
-    .custom-uploader-button {
-        background-color: #28a745;
+    .stFileUploader > div > button {
+        background-color: #28a745; /* Nút Browse files */
         color: white;
         border-radius: 8px;
         padding: 10px 20px;
         font-weight: bold;
         transition: background-color 0.3s ease;
-        margin-top: 15px; /* Khoảng cách với text */
-        display: inline-block; /* Để nút không chiếm hết chiều rộng */
     }
-    .custom-uploader-button:hover {
+    .stFileUploader > div > button:hover {
         background-color: #218838;
     }
-
     .stImage {
         border-radius: 10px;
         box-shadow: 0 4px 8px rgba(0,0,0,0.1);
@@ -192,109 +159,19 @@ st.markdown("""
 
 # --- Giao diện Streamlit ---
 st.title("🍅 ỨNG DỤNG NHẬN DIỆN BỆNH QUA LÁ CÀ CHUA 🍃")
+# Đã thêm class 'centered-text' để căn giữa dòng này
 st.markdown('<p class="centered-text">Vui lòng chụp hoặc tải lên ảnh lá cà chua (có thể là lá khỏe hoặc bị bệnh) 🌱</p>', unsafe_allow_html=True)
 
-# --- Thành phần tải ảnh lên tùy chỉnh bằng HTML/JavaScript ---
-# Đây là phần thay thế cho st.file_uploader mặc định
-custom_uploader_html = """
-<div class="custom-uploader-container" id="customUploader">
-    <input type="file" id="fileInput" accept="image/jpeg, image/png, image/jpg">
-    <div class="custom-uploader-text-main">Kéo và thả tệp vào đây</div>
-    <div class="custom-uploader-text-limit">Giới hạn 200MB mỗi tệp (JPG, JPEG, PNG)</div>
-    <div class="custom-uploader-button">Duyệt tệp</div>
-    <div id="fileNameDisplay" style="margin-top: 10px; font-size: 0.9em; color: #666;"></div>
-</div>
-
-<script>
-    const fileInput = document.getElementById('fileInput');
-    const customUploader = document.getElementById('customUploader');
-    const fileNameDisplay = document.getElementById('fileNameDisplay');
-    const componentKey = "custom_uploader_component"; // Key của component Streamlit
-
-    // Hàm để gửi dữ liệu về Streamlit
-    function sendDataToStreamlit(dataPayload) {
-        if (window.Streamlit && window.Streamlit.setComponentValue) {
-            window.Streamlit.setComponentValue(dataPayload);
-        } else {
-            console.error("Streamlit object or setComponentValue not found. Cannot send data.");
-        }
-    }
-
-    // Gửi giá trị khởi tạo là một dictionary rỗng khi component được tải
-    // Điều này giúp Streamlit nhận biết và khởi tạo thành phần một cách chính xác,
-    // tránh các lỗi TypeError khi uploaded_image_data chưa có giá trị hoặc không đúng kiểu.
-    document.addEventListener('DOMContentLoaded', function() {
-        if (window.Streamlit && window.Streamlit.setComponentValue) {
-            sendDataToStreamlit({}); // Gửi dictionary rỗng để khởi tạo
-        }
-    });
-
-    fileInput.addEventListener('change', function(event) {
-        const file = event.target.files[0];
-        if (file) {
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                sendDataToStreamlit({
-                    data: e.target.result, // Base64 encoded image
-                    name: file.name,
-                    type: file.type
-                });
-                fileNameDisplay.textContent = `Đã chọn: ${file.name} (${(file.size / 1024 / 1024).toFixed(2)} MB)`;
-            };
-            reader.readAsDataURL(file);
-        } else {
-            sendDataToStreamlit({}); // Gửi dictionary rỗng khi không có file
-            fileNameDisplay.textContent = '';
-        }
-    });
-
-    // Handle drag and drop
-    customUploader.addEventListener('dragover', (e) => {
-        e.preventDefault();
-        customUploader.style.borderColor = '#28a745';
-        customUploader.style.backgroundColor = '#d4ffd4';
-    });
-
-    customUploader.addEventListener('dragleave', () => {
-        customUploader.style.borderColor = '#a7d9b5';
-        customUploader.style.backgroundColor = '#e6ffe6';
-    });
-
-    customUploader.addEventListener('drop', (e) => {
-        e.preventDefault();
-        customUploader.style.borderColor = '#a7d9b5';
-        customUploader.style.backgroundColor = '#e6ffe6';
-        const files = e.dataTransfer.files;
-        if (files.length > 0) {
-            fileInput.files = files; // Assign dropped files to the input
-            fileInput.dispatchEvent(new Event('change')); // Trigger change event
-        }
-    });
-</script>
-"""
-# Nhúng thành phần tùy chỉnh vào Streamlit
-uploaded_image_data = components.html(
-    custom_uploader_html,
-    height=200, # Chiều cao của thành phần tùy chỉnh
-    scrolling=False,
-    key="custom_uploader_component" # Key duy nhất cho thành phần
+tep_anh = st.file_uploader(
+    "Kéo và thả tệp vào đây hoặc nhấp để duyệt",
+    type=["jpg", "jpeg", "png"],
+    label_visibility="collapsed",
+    help="Giới hạn 200MB mỗi tệp"
 )
-
-# Xử lý dữ liệu ảnh được gửi từ JavaScript
-tep_anh = None
-# Kiểm tra nếu uploaded_image_data không phải là None và có chứa 'data'
-# Thêm kiểm tra uploaded_image_data có phải là dict không trước khi truy cập .get()
-if uploaded_image_data and isinstance(uploaded_image_data, dict) and uploaded_image_data.get('data'):
-    # Chuyển đổi base64 data URL thành bytes
-    base64_string = uploaded_image_data['data'].split(',')[1]
-    image_bytes = base64.b64decode(base64_string)
-    
-    # Tạo đối tượng BytesIO để Streamlit.Image.open có thể đọc
-    tep_anh = io.BytesIO(image_bytes)
-    tep_anh.name = uploaded_image_data.get('name', 'uploaded_image.png') # Gán lại tên file
 
 if tep_anh is not None:
     anh = Image.open(tep_anh).convert("RGB")
+    # Đã thay use_column_width thành use_container_width để loại bỏ cảnh báo và đảm bảo hiển thị tốt
     st.image(anh, caption="📷 Ảnh đã tải lên", use_container_width=True) 
 
     with st.spinner("🔍 Đang phân tích... Vui lòng chờ ⏳"):
