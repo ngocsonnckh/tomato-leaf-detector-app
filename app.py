@@ -162,10 +162,11 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # --- Giao diện Streamlit ---
-st.title("🍅 ỨNG DỤNG NHẬN DIỆN BỆNH QUA LÁ CÀ CHUA  ")
+st.title("🍅 ỨNG DỤNG AI NHẬN DIỆN BỆNH QUA LÁ CÀ CHUA  ")
 
 # Sử dụng markdown để tạo nhãn tùy chỉnh, to, đậm và nổi bật
-st.markdown('<p class="upload-label">👇 Bấm vào đây để chụp hoặc tải ảnh lá cà chua lên</p>', unsafe_allow_html=True)
+st.markdown('<p class="upload-label"> Bấm vào đây để chụp hoặc tải ảnh lá cà chua lên 
+👇</p>', unsafe_allow_html=True)
 
 # Ẩn nhãn mặc định của file_uploader và sử dụng nhãn tùy chỉnh ở trên
 tep_anh = st.file_uploader(
