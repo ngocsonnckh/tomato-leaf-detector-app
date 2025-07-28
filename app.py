@@ -220,12 +220,12 @@ custom_uploader_html = """
         }
     }
 
-    // Gửi giá trị null ban đầu khi component được tải để Streamlit nhận biết
-    // và tránh lỗi TypeError khi uploaded_image_data chưa có giá trị.
-    // Đảm bảo Streamlit đã sẵn sàng trước khi gửi.
+    // Gửi giá trị khởi tạo là một dictionary rỗng khi component được tải
+    // Điều này giúp Streamlit nhận biết và khởi tạo thành phần một cách chính xác,
+    // tránh các lỗi TypeError khi uploaded_image_data chưa có giá trị hoặc không đúng kiểu.
     document.addEventListener('DOMContentLoaded', function() {
         if (window.Streamlit && window.Streamlit.setComponentValue) {
-            sendDataToStreamlit(null); // Gửi null để khởi tạo
+            sendDataToStreamlit({}); // Gửi dictionary rỗng để khởi tạo
         }
     });
 
@@ -243,7 +243,7 @@ custom_uploader_html = """
             };
             reader.readAsDataURL(file);
         } else {
-            sendDataToStreamlit(null); // Gửi null khi không có file
+            sendDataToStreamlit({}); // Gửi dictionary rỗng khi không có file
             fileNameDisplay.textContent = '';
         }
     });
