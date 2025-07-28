@@ -158,15 +158,15 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # --- Giao diện Streamlit ---
-st.title("🍅 ỨNG DỤNG NHẬN DIỆN BỆNH QUA LÁ CÀ CHUA 🍃")
+st.title("� ỨNG DỤNG NHẬN DIỆN BỆNH QUA LÁ CÀ CHUA 🍃")
 # Đã thêm class 'centered-text' để căn giữa dòng này
 st.markdown('<p class="centered-text">Vui lòng chụp hoặc tải lên ảnh lá cà chua (có thể là lá khỏe hoặc bị bệnh) 🌱</p>', unsafe_allow_html=True)
 
 tep_anh = st.file_uploader(
-    "Kéo và thả tệp vào đây hoặc nhấp để duyệt",
+    "Kéo và thả tệp vào đây hoặc nhấp để duyệt", # Đã dịch sang tiếng Việt
     type=["jpg", "jpeg", "png"],
     label_visibility="collapsed",
-    help="Giới hạn 200MB mỗi tệp"
+    help="Giới hạn 200MB mỗi tệp" # Đã dịch sang tiếng Việt
 )
 
 if tep_anh is not None:
@@ -196,3 +196,4 @@ if tep_anh is not None:
 # Thêm một số khoảng trống và footer cuối cùng
 st.markdown("---")
 st.markdown('<div class="footer">Dự án được thực hiện bởi nhóm nghiên cứu AI.</div>', unsafe_allow_html=True)
+�
