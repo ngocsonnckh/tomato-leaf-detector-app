@@ -31,20 +31,20 @@ def du_doan_benh(anh):
 
 # --- Thông tin mô tả bệnh ---
 mo_ta_benh = {
-    "Bacterial_spot": "🔴 **Bệnh đốm vi khuẩn**\nNguyên nhân: Vi khuẩn Xanthomonas.\nTriệu chứng: Đốm nhỏ đen/nâu, lá rách.\nTác hại: Giảm quang hợp, ảnh hưởng phát triển.",
-    "Late_blight": "🔵 **Mốc sương muộn**\nNguyên nhân: Nấm Phytophthora.\nTriệu chứng: Mảng nâu đậm, viền vàng.\nTác hại: Gây héo, chết cây hàng loạt.",
-    "Leaf_Mold": "🟡 **Mốc lá**\nNguyên nhân: Nấm Cladosporium.\nTriệu chứng: Đốm vàng, mốc xám.\nTác hại: Rụng lá sớm, giảm năng suất.",
-    "Septoria_leaf_spot": "🟠 **Đốm lá Septoria**\nNguyên nhân: Nấm Septoria.\nTriệu chứng: Đốm tròn, viền sẫm.\nTác hại: Rụng lá, cây yếu.",
-    "Yellow_Leaf_Curl_Virus": "🟣 **Bệnh xoăn vàng lá**\nNguyên nhân: Virus TYLCV qua bọ phấn trắng.\nTriệu chứng: Lá xoăn, vàng, cây kém phát triển.\nTác hại: Giảm năng suất nặng nề.",
-    "healthy": "✅ **Lá khỏe mạnh**\nKhông có dấu hiệu bệnh lý. Màu xanh đều, không xoăn hay đốm."
+    "Bacterial_spot": "🔴 **Bệnh đốm vi khuẩn**\n* **Nguyên nhân:** Vi khuẩn Xanthomonas.\n* **Triệu chứng:** Đốm nhỏ đen/nâu, lá rách.\n* **Tác hại:** Giảm quang hợp, ảnh hưởng phát triển.",
+    "Late_blight": "🔵 **Mốc sương muộn**\n* **Nguyên nhân:** Nấm Phytophthora.\n* **Triệu chứng:** Mảng nâu đậm, viền vàng.\n* **Tác hại:** Gây héo, chết cây hàng loạt.",
+    "Leaf_Mold": "🟡 **Mốc lá**\n* **Nguyên nhân:** Nấm Cladosporium.\n* **Triệu chứng:** Đốm vàng, mốc xám.\n* **Tác hại:** Rụng lá sớm, giảm năng suất.",
+    "Septoria_leaf_spot": "🟠 **Đốm lá Septoria**\n* **Nguyên nhân:** Nấm Septoria.\n* **Triệu chứng:** Đốm tròn, viền sẫm.\n* **Tác hại:** Rụng lá, cây yếu.",
+    "Yellow_Leaf_Curl_Virus": "🟣 **Bệnh xoăn vàng lá**\n* **Nguyên nhân:** Virus TYLCV qua bọ phấn trắng.\n* **Triệu chứng:** Lá xoăn, vàng, cây kém phát triển.\n* **Tác hại:** Giảm năng suất nặng nề.",
+    "healthy": "✅ **Lá khỏe mạnh**\nKhông có dấu hiệu bệnh lý. Cây phát triển tốt, lá có màu xanh đều, không có biểu hiện xoăn hay đốm bất thường."
 }
 
 # --- Cấu hình trang và CSS tùy chỉnh để làm đẹp giao diện ---
-st.set_page_config(page_title="Ứng dụng Nhận diện Bệnh Lá Cà Chua", page_icon="�", layout="centered")
+st.set_page_config(page_title="Ứng dụng Nhận diện Bệnh Lá Cà Chua", page_icon="🍅", layout="centered")
 
 st.markdown("""
 <style>
-    @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700;900&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&display=swap');
 
     html, body, [class*="css"] {
         font-family: 'Roboto', sans-serif;
@@ -71,7 +71,6 @@ st.markdown("""
         text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
     }
     
-    /* === CSS CHO NHÃN TÙY CHỈNH CỦA KHUNG TẢI LÊN === */
     .upload-label {
         font-size: 24px !important;
         font-weight: 900 !important;
@@ -79,9 +78,8 @@ st.markdown("""
         text-align: center !important;
         line-height: 1.4 !important;
         display: block;
-        margin-bottom: 10px; /* Thêm khoảng cách với khung bên dưới */
+        margin-bottom: 10px;
     }
-    /* === KẾT THÚC CSS CẬP NHẬT === */
 
     .centered-text {
         text-align: center;
@@ -118,24 +116,30 @@ st.markdown("""
     .stSpinner > div > div {
         color: #28a745 !important;
     }
+
+    /* === CSS ĐÃ CẬP NHẬT ĐỂ LÀM NỔI BẬT KẾT QUẢ === */
     .stSuccess, .stInfo, .stWarning, .stError {
-        border-radius: 5px;
-        padding: 10px;
-        margin-top: 15px;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-        font-size: 1.1em;
+        border-radius: 8px;
+        padding: 18px;
+        margin-top: 20px;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.08);
+        font-size: 1.4em !important; /* Tăng kích thước chữ của kết quả */
+        line-height: 1.6;
     }
     .stSuccess {
         background-color: #d4edda;
         color: #155724;
-        border-left: 5px solid #28a745;
-        font-weight: bold;
+        border-left: 6px solid #28a745;
+        font-weight: 700 !important; /* Làm chữ đậm hơn */
     }
     .stInfo {
         background-color: #d1ecf1;
         color: #0c5460;
-        border-left: 5px solid #17a2b8;
+        border-left: 6px solid #17a2b8;
+        font-weight: 500 !important; /* Cũng làm chữ đậm hơn */
     }
+    /* === KẾT THÚC CSS CẬP NHẬT === */
+
     .stWarning {
         background-color: #fff3cd;
         color: #856404;
@@ -158,7 +162,7 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # --- Giao diện Streamlit ---
-st.title("🍅 ỨNG DỤNG NHẬN DIỆN BỆNH QUA LÁ CÀ CHUA 🍃")
+st.title("🍅 ỨNG DỤNG NHẬN DIỆN BỆNH QUA LÁ CÀ CHUA �")
 
 # Sử dụng markdown để tạo nhãn tùy chỉnh, to, đậm và nổi bật
 st.markdown('<p class="upload-label">👇 Bấm vào đây để chụp hoặc tải ảnh lá cà chua lên</p>', unsafe_allow_html=True)
@@ -188,10 +192,10 @@ if tep_anh is not None:
         # Định dạng tên bệnh để hiển thị đẹp hơn
         formatted_ten_benh = ' '.join([word.capitalize() for word in ten_benh_goc.split('_')])
 
-        st.success(f"✅ Phát hiện: **{formatted_ten_benh}** (Độ tin cậy: {do_tin_cay:.1f}%)")
+        st.success(f"**Phát hiện:** {formatted_ten_benh} (Độ tin cậy: {do_tin_cay:.1f}%)")
 
         # Hiển thị mô tả bệnh
-        st.info(f"💡 **Thông tin bệnh:** {mo_ta_benh.get(ten_benh_goc, 'Không có mô tả chi tiết cho loại bệnh này.')}")
+        st.info(f"**Thông tin bệnh:**\n{mo_ta_benh.get(ten_benh_goc, 'Không có mô tả chi tiết cho loại bệnh này.')}")
     else:
         st.warning("🥺 Không phát hiện được bệnh nào. Vui lòng thử ảnh khác hoặc đảm bảo ảnh rõ ràng.")
 
