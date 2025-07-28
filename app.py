@@ -40,7 +40,7 @@ mo_ta_benh = {
 }
 
 # --- Cấu hình trang và CSS tùy chỉnh để làm đẹp giao diện ---
-st.set_page_config(page_title="Ứng dụng Nhận diện Bệnh Lá Cà Chua", page_icon="🍅", layout="centered")
+st.set_page_config(page_title="Ứng dụng AI Nhận diện Bệnh Lá Cà Chua", page_icon="🍅", layout="centered")
 
 st.markdown("""
 <style>
