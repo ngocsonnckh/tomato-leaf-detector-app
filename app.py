@@ -5,6 +5,7 @@ import io
 import base64
 import os
 from dotenv import load_dotenv # Import thư viện dotenv
+import streamlit.components.v1 as components # Import components để nhúng HTML/JS
 
 # --- Tải biến môi trường từ file .env ---
 # Chỉ dùng khi chạy cục bộ. Khi triển khai lên Streamlit Cloud,
@@ -75,29 +76,61 @@ st.markdown("""
         font-size: 1.2em; /* Tăng kích thước chữ cho mô tả */
         margin-bottom: 1.5rem; /* Khoảng cách dưới */
     }
-    .stFileUploader {
-        border: 2px dashed #a7d9b5; /* Viền nét đứt màu xanh */
+    /* CSS cho custom uploader */
+    .custom-uploader-container {
+        border: 2px dashed #a7d9b5;
         border-radius: 10px;
         padding: 20px;
         text-align: center;
-        background-color: #e6ffe6; /* Nền xanh nhạt */
+        background-color: #e6ffe6;
         transition: all 0.3s ease-in-out;
+        cursor: pointer;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        min-height: 150px; /* Chiều cao tối thiểu */
+        position: relative;
+        overflow: hidden; /* Để ẩn input file gốc */
     }
-    .stFileUploader:hover {
+    .custom-uploader-container:hover {
         border-color: #28a745;
         background-color: #d4ffd4;
     }
-    .stFileUploader > div > button {
-        background-color: #28a745; /* Nút Browse files */
+    .custom-uploader-container input[type="file"] {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        top: 0;
+        left: 0;
+        opacity: 0; /* Ẩn input file gốc */
+        cursor: pointer;
+    }
+    .custom-uploader-text-main {
+        font-weight: bold;
+        font-size: 1.2em;
+        color: #333;
+        margin-bottom: 5px;
+    }
+    .custom-uploader-text-limit {
+        font-size: 0.9em;
+        color: #555;
+        margin-top: 5px;
+    }
+    .custom-uploader-button {
+        background-color: #28a745;
         color: white;
         border-radius: 8px;
         padding: 10px 20px;
         font-weight: bold;
         transition: background-color 0.3s ease;
+        margin-top: 15px; /* Khoảng cách với text */
+        display: inline-block; /* Để nút không chiếm hết chiều rộng */
     }
-    .stFileUploader > div > button:hover {
+    .custom-uploader-button:hover {
         background-color: #218838;
     }
+
     .stImage {
         border-radius: 10px;
         box-shadow: 0 4px 8px rgba(0,0,0,0.1);
@@ -161,12 +194,97 @@ st.markdown("""
 st.title("🍅 ỨNG DỤNG NHẬN DIỆN BỆNH QUA LÁ CÀ CHUA 🍃")
 st.markdown('<p class="centered-text">Vui lòng chụp hoặc tải lên ảnh lá cà chua (có thể là lá khỏe hoặc bị bệnh) 🌱</p>', unsafe_allow_html=True)
 
-tep_anh = st.file_uploader(
-    "Kéo và thả tệp vào đây hoặc nhấp để duyệt", # Tham số này sẽ bị ghi đè bởi JS
-    type=["jpg", "jpeg", "png"],
-    label_visibility="collapsed", # Ẩn nhãn mặc định để phù hợp với giao diện ảnh mẫu
-    help="Giới hạn 200MB mỗi tệp" # Tham số này sẽ bị ghi đè bởi JS
+# --- Thành phần tải ảnh lên tùy chỉnh bằng HTML/JavaScript ---
+# Đây là phần thay thế cho st.file_uploader mặc định
+custom_uploader_html = """
+<div class="custom-uploader-container" id="customUploader">
+    <input type="file" id="fileInput" accept="image/jpeg, image/png, image/jpg">
+    <div class="custom-uploader-text-main">Kéo và thả tệp vào đây</div>
+    <div class="custom-uploader-text-limit">Giới hạn 200MB mỗi tệp (JPG, JPEG, PNG)</div>
+    <div class="custom-uploader-button">Duyệt tệp</div>
+    <div id="fileNameDisplay" style="margin-top: 10px; font-size: 0.9em; color: #666;"></div>
+</div>
+
+<script>
+    const fileInput = document.getElementById('fileInput');
+    const customUploader = document.getElementById('customUploader');
+    const fileNameDisplay = document.getElementById('fileNameDisplay');
+
+    fileInput.addEventListener('change', function(event) {
+        const file = event.target.files[0];
+        if (file) {
+            // Gửi dữ liệu file về Streamlit
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                // Streamlit component communication
+                window.parent.postMessage({
+                    type: 'streamlit:setComponentValue',
+                    args: {
+                        key: 'uploaded_image_data', // Key để Streamlit nhận dữ liệu
+                        value: {
+                            data: e.target.result, // Base64 encoded image
+                            name: file.name,
+                            type: file.type
+                        }
+                    },
+                }, '*');
+                fileNameDisplay.textContent = `Đã chọn: ${file.name} (${(file.size / 1024 / 1024).toFixed(2)} MB)`;
+            };
+            reader.readAsDataURL(file);
+        } else {
+            window.parent.postMessage({
+                type: 'streamlit:setComponentValue',
+                args: {
+                    key: 'uploaded_image_data',
+                    value: null
+                },
+            }, '*');
+            fileNameDisplay.textContent = '';
+        }
+    });
+
+    // Handle drag and drop
+    customUploader.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        customUploader.style.borderColor = '#28a745';
+        customUploader.style.backgroundColor = '#d4ffd4';
+    });
+
+    customUploader.addEventListener('dragleave', () => {
+        customUploader.style.borderColor = '#a7d9b5';
+        customUploader.style.backgroundColor = '#e6ffe6';
+    });
+
+    customUploader.addEventListener('drop', (e) => {
+        e.preventDefault();
+        customUploader.style.borderColor = '#a7d9b5';
+        customUploader.style.backgroundColor = '#e6ffe6';
+        const files = e.dataTransfer.files;
+        if (files.length > 0) {
+            fileInput.files = files; // Assign dropped files to the input
+            fileInput.dispatchEvent(new Event('change')); // Trigger change event
+        }
+    });
+</script>
+"""
+# Nhúng thành phần tùy chỉnh vào Streamlit
+uploaded_image_data = components.html(
+    custom_uploader_html,
+    height=200, # Chiều cao của thành phần tùy chỉnh
+    scrolling=False,
+    key="custom_uploader_component" # Key duy nhất cho thành phần
 )
+
+# Xử lý dữ liệu ảnh được gửi từ JavaScript
+tep_anh = None
+if uploaded_image_data and uploaded_image_data.get('data'):
+    # Chuyển đổi base64 data URL thành bytes
+    base64_string = uploaded_image_data['data'].split(',')[1]
+    image_bytes = base64.b64decode(base64_string)
+    
+    # Tạo đối tượng BytesIO để Streamlit.Image.open có thể đọc
+    tep_anh = io.BytesIO(image_bytes)
+    tep_anh.name = uploaded_image_data.get('name', 'uploaded_image.png') # Gán lại tên file
 
 if tep_anh is not None:
     anh = Image.open(tep_anh).convert("RGB")
@@ -194,78 +312,3 @@ if tep_anh is not None:
 # Thêm một số khoảng trống và footer cuối cùng
 st.markdown("---")
 st.markdown('<div class="footer">Dự án được thực hiện bởi nhóm nghiên cứu AI.</div>', unsafe_allow_html=True)
-
-# --- JavaScript để thay thế văn bản mặc định của Streamlit Uploader ---
-# Sử dụng st.components.v1.html để chèn JavaScript
-st.components.v1.html(
-    """
-    <script>
-        function replaceUploaderText() {
-            const dropzone = document.querySelector('[data-testid="stFileUploaderDropzone"]');
-            if (dropzone) {
-                // Hide original text elements
-                const pTags = dropzone.querySelectorAll('p');
-                pTags.forEach(p => p.style.display = 'none');
-
-                const buttonSpan = dropzone.querySelector('button span');
-                if (buttonSpan) {
-                    buttonSpan.style.display = 'none';
-                }
-
-                // Create and inject new Vietnamese text
-                let customDragDropText = document.createElement('div');
-                customDragDropText.textContent = "Kéo và thả tệp vào đây";
-                customDragDropText.style.cssText = "text-align: center; color: #333; font-weight: bold; font-size: 1.2em; margin-bottom: 5px;";
-                
-                let customLimitText = document.createElement('div');
-                customLimitText.textContent = "Giới hạn 200MB mỗi tệp (JPG, JPEG, PNG)";
-                customLimitText.style.cssText = "text-align: center; color: #555; font-size: 0.9em; margin-top: 5px;";
-
-                let customButtonText = document.createElement('span');
-                customButtonText.textContent = "Duyệt tệp";
-                customButtonText.style.cssText = "color: white; font-weight: bold; font-size: 1em;";
-
-                // Find the button and append the custom text
-                const button = dropzone.querySelector('button');
-                if (button && !button.querySelector('span[data-custom-text="true"]')) { // Check to prevent re-adding
-                    button.appendChild(customButtonText);
-                    customButtonText.setAttribute('data-custom-text', 'true'); // Mark as custom to avoid re-creation
-                }
-
-                // Append custom texts to the dropzone if not already present
-                if (!dropzone.querySelector('div[data-custom-dragdrop="true"]')) {
-                    dropzone.insertBefore(customDragDropText, dropzone.firstChild);
-                    customDragDropText.setAttribute('data-custom-dragdrop', 'true');
-                }
-                if (!dropzone.querySelector('div[data-custom-limit="true"]')) {
-                    dropzone.insertBefore(customLimitText, button); // Insert before the button
-                    customLimitText.setAttribute('data-custom-limit', 'true');
-                }
-            }
-        }
-
-        // Run the function when the component is loaded and when Streamlit updates
-        // Use a MutationObserver to detect when the Streamlit uploader is rendered
-        const observer = new MutationObserver((mutationsList, observer) => {
-            if (document.querySelector('[data-testid="stFileUploaderDropzone"]')) {
-                replaceUploaderText();
-                // Optionally disconnect observer if you only need it to run once
-                // observer.disconnect();
-            }
-        });
-
-        // Start observing the body for changes (Streamlit rendering)
-        observer.observe(document.body, { childList: true, subtree: true });
-
-        // Also run once on initial load for good measure
-        window.addEventListener('load', replaceUploaderText);
-        // And if Streamlit reruns, ensure it's updated (though MutationObserver should catch it)
-        if (window.Streamlit) {
-            window.Streamlit.events.addEventListener(window.Streamlit.events.AFTER_RERUN, replaceUploaderText);
-        }
-
-    </script>
-    """,
-    height=0, # Chiều cao 0 để không chiếm không gian
-    width=0 # Chiều rộng 0
-)
