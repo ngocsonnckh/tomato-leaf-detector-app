@@ -5,6 +5,7 @@ import io
 import base64
 import os
 from dotenv import load_dotenv # Import thư viện dotenv
+import streamlit.components.v1 as components # Import components để nhúng HTML/JS
 
 # --- Tải biến môi trường từ file .env ---
 # Chỉ dùng khi chạy cục bộ. Khi triển khai lên Streamlit Cloud,
@@ -41,7 +42,7 @@ mo_ta_benh = {
 }
 
 # --- Cấu hình trang và CSS tùy chỉnh để làm đẹp giao diện ---
-st.set_page_config(page_title="Ứng dụng Nhận diện Bệnh Lá Cà Chua", page_icon="�", layout="centered")
+st.set_page_config(page_title="Ứng dụng Nhận diện Bệnh Lá Cà Chua", page_icon="🍅", layout="centered")
 
 st.markdown("""
 <style>
@@ -78,66 +79,61 @@ st.markdown("""
         margin-bottom: 1.5rem;
     }
     
-    /* CSS cho st.file_uploader */
-    .stFileUploader {
+    /* CSS cho custom uploader */
+    .custom-uploader-container {
         border: 2px dashed #a7d9b5;
         border-radius: 10px;
         padding: 20px;
         text-align: center;
         background-color: #e6ffe6;
         transition: all 0.3s ease-in-out;
-        min-height: 150px; /* Đảm bảo đủ không gian cho văn bản */
-        display: flex; /* Sử dụng flexbox để căn giữa nội dung */
+        cursor: pointer;
+        display: flex;
         flex-direction: column;
-        justify-content: center;
         align-items: center;
-        position: relative; /* Cần thiết cho các pseudo-element */
+        justify-content: center;
+        min-height: 150px; /* Đảm bảo đủ không gian cho văn bản */
+        position: relative;
+        overflow: hidden; /* Để ẩn input file gốc */
     }
-    .stFileUploader:hover {
+    .custom-uploader-container:hover {
         border-color: #28a745;
         background-color: #d4ffd4;
     }
-
-    /* Ẩn văn bản "Drag and drop file here" và "Limit 200MB per file..." */
-    .stFileUploader [data-testid="stFileUploaderDropzone"] p {
-        display: none !important;
-    }
-
-    /* Ẩn văn bản "Browse files" mặc định */
-    .stFileUploader [data-testid="stFileUploaderDropzone"] button span {
-        visibility: hidden; /* Ẩn văn bản gốc */
-        position: relative;
-    }
-
-    /* Chèn văn bản "Duyệt tệp" vào nút */
-    .stFileUploader [data-testid="stFileUploaderDropzone"] button::after {
-        content: "Duyệt tệp";
-        visibility: visible;
+    .custom-uploader-container input[type="file"] {
         position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        color: white;
-        font-weight: bold;
-        font-size: 1em;
-        z-index: 2; /* Đảm bảo nằm trên nút */
+        width: 100%;
+        height: 100%;
+        top: 0;
+        left: 0;
+        opacity: 0; /* Ẩn input file gốc */
+        cursor: pointer;
     }
-
-    .stFileUploader > div > button {
+    .custom-uploader-text-main {
+        font-weight: bold;
+        font-size: 1.2em;
+        color: #333;
+        margin-bottom: 5px;
+    }
+    .custom-uploader-text-limit {
+        font-size: 0.9em;
+        color: #555;
+        margin-top: 5px;
+    }
+    .custom-uploader-button {
         background-color: #28a745;
         color: white;
         border-radius: 8px;
         padding: 10px 20px;
         font-weight: bold;
         transition: background-color 0.3s ease;
-        position: relative; /* Để ::after có thể định vị */
-        overflow: hidden; /* Đảm bảo text không tràn ra ngoài */
-        margin-top: 20px; /* Khoảng cách với label */
-        z-index: 2; /* Đảm bảo nút nằm trên các pseudo-element khác */
+        margin-top: 15px; /* Khoảng cách với text */
+        display: inline-block; /* Để nút không chiếm hết chiều rộng */
     }
-    .stFileUploader > div > button:hover {
+    .custom-uploader-button:hover {
         background-color: #218838;
     }
+
     .stImage {
         border-radius: 10px;
         box-shadow: 0 4px 8px rgba(0,0,0,0.1);
@@ -191,20 +187,111 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # --- Giao diện Streamlit ---
-st.title("🍅 ỨNG DỤNG NHẬN DIỆN BỆNH QUA LÁ CÀ CHUA ") # Đã thay đổi icon
+st.title("🍅 ỨNG DỤNG NHẬN DIỆN BỆNH QUA LÁ CÀ CHUA 🍃")
 st.markdown('<p class="centered-text">Vui lòng chụp hoặc tải lên ảnh lá cà chua (có thể là lá khỏe hoặc bị bệnh) 🌱</p>', unsafe_allow_html=True)
 
-# Sử dụng label của st.file_uploader cho văn bản chính
-tep_anh = st.file_uploader(
-    label="👇 Bấm vào đây để chụp hoặc tải ảnh lá cà chua lên", # Văn bản chính nằm trong khung
-    type=["jpg", "jpeg", "png"],
-    help="Hỗ trợ các định dạng: JPG, JPEG, PNG. Dung lượng tối đa 200MB.", # Help text này sẽ tự động ẩn khi label_visibility không phải "visible"
-    # label_visibility="visible" (Mặc định là visible, không cần ghi rõ nếu muốn hiển thị)
+# --- Thành phần tải ảnh lên tùy chỉnh bằng HTML/JavaScript ---
+# Đây là phần thay thế cho st.file_uploader mặc định
+custom_uploader_html = """
+<div class="custom-uploader-container" id="customUploader">
+    <input type="file" id="fileInput" accept="image/jpeg, image/png, image/jpg">
+    <div class="custom-uploader-text-main">👇 Bấm vào đây để chụp hoặc tải ảnh lá cà chua lên</div>
+    <div class="custom-uploader-text-limit">Hỗ trợ các định dạng: JPG, JPEG, PNG. Dung lượng tối đa 200MB.</div>
+    <div class="custom-uploader-button">Duyệt tệp</div>
+    <div id="fileNameDisplay" style="margin-top: 10px; font-size: 0.9em; color: #666;"></div>
+</div>
+
+<script>
+    const fileInput = document.getElementById('fileInput');
+    const customUploader = document.getElementById('customUploader');
+    const fileNameDisplay = document.getElementById('fileNameDisplay');
+    const componentKey = "custom_uploader_component"; // Key của component Streamlit
+
+    // Hàm để gửi dữ liệu về Streamlit
+    function sendDataToStreamlit(dataPayload) {
+        if (window.Streamlit && window.Streamlit.setComponentValue) {
+            window.Streamlit.setComponentValue(dataPayload);
+        } else {
+            console.error("Streamlit object or setComponentValue not found. Cannot send data.");
+        }
+    }
+
+    // Gửi giá trị khởi tạo là một dictionary rỗng khi component được tải
+    // Điều này giúp Streamlit nhận biết và khởi tạo thành phần một cách chính xác,
+    // tránh các lỗi TypeError khi uploaded_image_data chưa có giá trị hoặc không đúng kiểu.
+    document.addEventListener('DOMContentLoaded', function() {
+        if (window.Streamlit && window.Streamlit.setComponentValue) {
+            sendDataToStreamlit({}); // Gửi dictionary rỗng để khởi tạo
+        }
+    });
+
+    fileInput.addEventListener('change', function(event) {
+        const file = event.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                sendDataToStreamlit({
+                    data: e.target.result, // Base64 encoded image
+                    name: file.name,
+                    type: file.type
+                });
+                fileNameDisplay.textContent = `Đã chọn: ${file.name} (${(file.size / 1024 / 1024).toFixed(2)} MB)`;
+            };
+            reader.readAsDataURL(file);
+        } else {
+            sendDataToStreamlit({}); // Gửi dictionary rỗng khi không có file
+            fileNameDisplay.textContent = '';
+        }
+    });
+
+    // Handle drag and drop
+    customUploader.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        customUploader.style.borderColor = '#28a745';
+        customUploader.style.backgroundColor = '#d4ffd4';
+    });
+
+    customUploader.addEventListener('dragleave', () => {
+        customUploader.style.borderColor = '#a7d9b5';
+        customUploader.style.backgroundColor = '#e6ffe6';
+    });
+
+    customUploader.addEventListener('drop', (e) => {
+        e.preventDefault();
+        customUploader.style.borderColor = '#a7d9b5';
+        customUploader.style.backgroundColor = '#e6ffe6';
+        const files = e.dataTransfer.files;
+        if (files.length > 0) {
+            fileInput.files = files; // Assign dropped files to the input
+            fileInput.dispatchEvent(new Event('change')); // Trigger change event
+        }
+    });
+</script>
+"""
+# Nhúng thành phần tùy chỉnh vào Streamlit
+uploaded_image_data = components.html(
+    custom_uploader_html,
+    height=200, # Chiều cao của thành phần tùy chỉnh
+    scrolling=False,
+    key="custom_uploader_component" # Key duy nhất cho thành phần
 )
+
+# Xử lý dữ liệu ảnh được gửi từ JavaScript
+tep_anh = None
+# Kiểm tra nếu uploaded_image_data không phải là None và có chứa 'data'
+# Thêm kiểm tra uploaded_image_data có phải là dict không trước khi truy cập .get()
+if uploaded_image_data and isinstance(uploaded_image_data, dict) and uploaded_image_data.get('data'):
+    # Chuyển đổi base64 data URL thành bytes
+    base64_string = uploaded_image_data['data'].split(',')[1]
+    image_bytes = base64.b64decode(base64_string)
+    
+    # Tạo đối tượng BytesIO để Streamlit.Image.open có thể đọc
+    tep_anh = io.BytesIO(image_bytes)
+    tep_anh.name = uploaded_image_data.get('name', 'uploaded_image.png') # Gán lại tên file
 
 if tep_anh is not None:
     anh = Image.open(tep_anh).convert("RGB")
-    st.image(anh, caption="📷 Ảnh đã tải lên", use_container_width=True)
+    st.image(anh, caption="📷 Ảnh đã tải lên", use_container_width=True) 
 
     with st.spinner("🔍 Đang phân tích... Vui lòng chờ ⏳"):
         ket_qua = du_doan_benh(anh)
@@ -215,7 +302,7 @@ if tep_anh is not None:
         ten_benh_goc = benh["class"]
         do_tin_cay = round(benh["confidence"] * 100, 2)
 
-        # Định dạng tên bệnh để hiển thị đẹp hơn
+        # Định dạng tên bệnh để hiển thị đẹp hơn (ví dụ: "Bacterial_spot" -> "Bacterial Spot")
         formatted_ten_benh = ' '.join([word.capitalize() for word in ten_benh_goc.split('_')])
 
         st.success(f"**Phát hiện:** {formatted_ten_benh} (Độ tin cậy: {do_tin_cay:.1f}%)")
@@ -225,6 +312,6 @@ if tep_anh is not None:
     else:
         st.warning("🥺 Không phát hiện được bệnh nào. Vui lòng thử ảnh khác hoặc đảm bảo ảnh rõ ràng.")
 
-# Thêm footer
+# Thêm một số khoảng trống và footer cuối cùng
 st.markdown("---")
 st.markdown('<div class="footer">Dự án được thực hiện bởi nhóm nghiên cứu AI.</div>', unsafe_allow_html=True)
