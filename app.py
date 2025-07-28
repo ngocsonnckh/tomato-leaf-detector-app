@@ -209,31 +209,41 @@ custom_uploader_html = """
     const fileInput = document.getElementById('fileInput');
     const customUploader = document.getElementById('customUploader');
     const fileNameDisplay = document.getElementById('fileNameDisplay');
+    const componentKey = "custom_uploader_component"; // Key của component Streamlit
 
     // Hàm để gửi dữ liệu về Streamlit
-    function sendDataToStreamlit(fileData, fileName, fileType) {
-        if (window.Streamlit) {
-            window.Streamlit.setComponentValue({
-                data: fileData, // Base64 encoded image
-                name: fileName,
-                type: fileType
-            });
+    function sendDataToStreamlit(dataPayload) {
+        if (window.Streamlit && window.Streamlit.setComponentValue) {
+            window.Streamlit.setComponentValue(dataPayload);
         } else {
-            console.error("Streamlit object not found. Cannot send data.");
+            console.error("Streamlit object or setComponentValue not found. Cannot send data.");
         }
     }
+
+    // Gửi giá trị null ban đầu khi component được tải để Streamlit nhận biết
+    // và tránh lỗi TypeError khi uploaded_image_data chưa có giá trị.
+    // Đảm bảo Streamlit đã sẵn sàng trước khi gửi.
+    document.addEventListener('DOMContentLoaded', function() {
+        if (window.Streamlit && window.Streamlit.setComponentValue) {
+            sendDataToStreamlit(null); // Gửi null để khởi tạo
+        }
+    });
 
     fileInput.addEventListener('change', function(event) {
         const file = event.target.files[0];
         if (file) {
             const reader = new FileReader();
             reader.onload = function(e) {
-                sendDataToStreamlit(e.target.result, file.name, file.type);
+                sendDataToStreamlit({
+                    data: e.target.result, // Base64 encoded image
+                    name: file.name,
+                    type: file.type
+                });
                 fileNameDisplay.textContent = `Đã chọn: ${file.name} (${(file.size / 1024 / 1024).toFixed(2)} MB)`;
             };
             reader.readAsDataURL(file);
         } else {
-            sendDataToStreamlit(null, null, null); // Gửi null khi không có file
+            sendDataToStreamlit(null); // Gửi null khi không có file
             fileNameDisplay.textContent = '';
         }
     });
@@ -260,15 +270,6 @@ custom_uploader_html = """
             fileInput.dispatchEvent(new Event('change')); // Trigger change event
         }
     });
-
-    // Gửi giá trị null ban đầu khi component được tải để Streamlit nhận biết
-    // và tránh lỗi TypeError khi uploaded_image_data chưa có giá trị.
-    if (window.Streamlit) {
-        window.Streamlit.setComponentValue(null);
-    } else {
-        // Fallback or warning if Streamlit is not ready
-        console.warn("Streamlit is not ready yet. Initial component value not set.");
-    }
 </script>
 """
 # Nhúng thành phần tùy chỉnh vào Streamlit
@@ -282,6 +283,7 @@ uploaded_image_data = components.html(
 # Xử lý dữ liệu ảnh được gửi từ JavaScript
 tep_anh = None
 # Kiểm tra nếu uploaded_image_data không phải là None và có chứa 'data'
+# Thêm kiểm tra uploaded_image_data có phải là dict không trước khi truy cập .get()
 if uploaded_image_data and isinstance(uploaded_image_data, dict) and uploaded_image_data.get('data'):
     # Chuyển đổi base64 data URL thành bytes
     base64_string = uploaded_image_data['data'].split(',')[1]
