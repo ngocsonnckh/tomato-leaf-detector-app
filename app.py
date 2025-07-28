@@ -14,6 +14,7 @@ load_dotenv()
 # --- Cấu hình mô hình Roboflow ---
 # LƯU Ý QUAN TRỌNG: ROBOFLOW_API_KEY được lấy từ biến môi trường (từ file .env khi chạy cục bộ,
 # hoặc từ Streamlit Secrets khi triển khai lên Streamlit Cloud).
+# Bạn đã cung cấp API Key: rSUzaeMGYrBA449orJYK
 KHOA_API = os.getenv("ROBOFLOW_API_KEY")
 
 TEN_MO_HINH = "tomato-leaf-diseases-lmem9"
@@ -22,7 +23,6 @@ DIA_CHI_API = f"https://detect.roboflow.com/{TEN_MO_HINH}/{PHIEN_BAN}?api_key={K
 
 # --- Hàm xử lý ảnh và gửi đến Roboflow ---
 def du_doan_benh(anh):
-    """Gửi ảnh đến API Roboflow để nhận dạng."""
     bo_dem = io.BytesIO()
     anh.save(bo_dem, quality=90, format="JPEG")
     anh_mahoa = base64.b64encode(bo_dem.getvalue()).decode("utf-8")
@@ -63,7 +63,7 @@ st.markdown("""
         margin: auto;
     }
     h1 {
-        color: #B22222;
+        color: #B22222; /* Màu đỏ nổi bật hơn (FireBrick) */
         text-align: center;
         margin-bottom: 1rem;
         font-size: 3em;
@@ -71,21 +71,7 @@ st.markdown("""
         text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
     }
     
-    .upload-label {
-        font-size: 24px !important;
-        font-weight: 900 !important;
-        color: #c62828 !important;
-        text-align: center !important;
-        line-height: 1.4 !important;
-        display: block;
-        margin-bottom: 10px;
-    }
-
-    .centered-text {
-        text-align: center;
-        font-size: 1.2em;
-        margin-bottom: 1.5rem;
-    }
+    /* CSS cho st.file_uploader */
     .stFileUploader {
         border: 2px dashed #a7d9b5;
         border-radius: 10px;
@@ -93,11 +79,49 @@ st.markdown("""
         text-align: center;
         background-color: #e6ffe6;
         transition: all 0.3s ease-in-out;
+        min-height: 150px; /* Đảm bảo đủ không gian cho văn bản */
+        display: flex; /* Sử dụng flexbox để căn giữa nội dung */
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
     }
     .stFileUploader:hover {
         border-color: #28a745;
         background-color: #d4ffd4;
     }
+    /* Ẩn nhãn mặc định của Streamlit (nếu không dùng label_visibility="collapsed") */
+    .stFileUploader label {
+        font-size: 24px !important;
+        font-weight: 900 !important;
+        color: #c62828 !important; /* Màu đỏ nổi bật cho nhãn chính */
+        text-align: center !important;
+        line-height: 1.4 !important;
+        display: block;
+        margin-bottom: 10px; /* Khoảng cách với các phần tử khác */
+    }
+
+    /* Ẩn văn bản "Drag and drop file here" và "Limit 200MB per file..." */
+    .stFileUploader [data-testid="stFileUploaderDropzone"] p {
+        display: none !important;
+    }
+
+    /* Ẩn văn bản "Browse files" mặc định và chèn văn bản tiếng Việt */
+    .stFileUploader [data-testid="stFileUploaderDropzone"] button span {
+        visibility: hidden; /* Ẩn văn bản gốc */
+        position: relative;
+    }
+    .stFileUploader [data-testid="stFileUploaderDropzone"] button::after {
+        content: "Duyệt tệp"; /* Chèn văn bản tiếng Việt */
+        visibility: visible;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        color: white;
+        font-weight: bold;
+        font-size: 1em;
+    }
+
     .stFileUploader > div > button {
         background-color: #28a745;
         color: white;
@@ -105,6 +129,8 @@ st.markdown("""
         padding: 10px 20px;
         font-weight: bold;
         transition: background-color 0.3s ease;
+        position: relative; /* Để ::after có thể định vị */
+        overflow: hidden; /* Đảm bảo text không tràn ra ngoài */
     }
     .stFileUploader > div > button:hover {
         background-color: #218838;
@@ -162,19 +188,16 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # --- Giao diện Streamlit ---
-st.title("🍅 ỨNG DỤNG NHẬN DIỆN BỆNH QUA LÁ CÀ CHUA �")
+st.title("🍅 ỨNG DỤNG NHẬN DIỆN BỆNH QUA LÁ CÀ CHUA ") # Đã thay đổi icon
+st.markdown('<p class="centered-text">Vui lòng chụp hoặc tải lên ảnh lá cà chua (có thể là lá khỏe hoặc bị bệnh) 🌱</p>', unsafe_allow_html=True)
 
-# Sử dụng markdown để tạo nhãn tùy chỉnh, to, đậm và nổi bật
-st.markdown('<p class="upload-label">👇 Bấm vào đây để chụp hoặc tải ảnh lá cà chua lên</p>', unsafe_allow_html=True)
-
-# Ẩn nhãn mặc định của file_uploader và sử dụng nhãn tùy chỉnh ở trên
+# Sử dụng label của st.file_uploader để hiển thị văn bản chính
 tep_anh = st.file_uploader(
-    label="Tải ảnh lên", # Dòng chữ này sẽ không hiển thị
+    label="👇 Bấm vào đây để chụp hoặc tải ảnh lá cà chua lên", # Văn bản chính nằm trong khung
     type=["jpg", "jpeg", "png"],
-    help="Hỗ trợ các định dạng: JPG, JPEG, PNG. Dung lượng tối đa 200MB.",
-    label_visibility="collapsed" # Thuộc tính quan trọng để ẩn nhãn mặc định
+    # help="Hỗ trợ các định dạng: JPG, JPEG, PNG. Dung lượng tối đa 200MB.", # Bỏ help vì sẽ dùng CSS để hiển thị
+    # label_visibility="collapsed" # Không dùng collapsed nữa vì muốn hiển thị label
 )
-
 
 if tep_anh is not None:
     anh = Image.open(tep_anh).convert("RGB")
