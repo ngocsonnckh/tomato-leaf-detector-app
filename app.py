@@ -21,7 +21,7 @@ TEN_MO_HINH = "tomato-leaf-diseases-lmem9"
 PHIEN_BAN = "1"
 DIA_CHI_API = f"https://detect.roboflow.com/{TEN_MO_HINH}/{PHIEN_BAN}?api_key={KHOA_API}"
 
-# --- Hàm xử lý ảnh và gửi đến Roboflow (giữ nguyên từ file gốc của bạn) ---
+# --- Hàm xử lý ảnh và gửi đến Roboflow ---
 def du_doan_benh(anh):
     bo_dem = io.BytesIO()
     anh.save(bo_dem, quality=90, format="JPEG")
@@ -29,7 +29,7 @@ def du_doan_benh(anh):
     phan_hoi = requests.post(DIA_CHI_API, data=anh_mahoa, headers={"Content-Type": "application/x-www-form-urlencoded"})
     return phan_hoi.json()
 
-# --- Thông tin mô tả bệnh (giữ nguyên từ file gốc của bạn, có thể bổ sung thêm) ---
+# --- Thông tin mô tả bệnh ---
 mo_ta_benh = {
     "Bacterial_spot": "🔴 **Bệnh đốm vi khuẩn**\nNguyên nhân: Vi khuẩn Xanthomonas.\nTriệu chứng: Đốm nhỏ đen/nâu, lá rách.\nTác hại: Giảm quang hợp, ảnh hưởng phát triển.",
     "Late_blight": "🔵 **Mốc sương muộn**\nNguyên nhân: Nấm Phytophthora.\nTriệu chứng: Mảng nâu đậm, viền vàng.\nTác hại: Gây héo, chết cây hàng loạt.",
@@ -40,7 +40,7 @@ mo_ta_benh = {
 }
 
 # --- Cấu hình trang và CSS tùy chỉnh để làm đẹp giao diện ---
-st.set_page_config(page_title="Ứng dụng Nhận diện Bệnh Lá Cà Chua", page_icon="🍅", layout="centered") # Đã thay icon trang
+st.set_page_config(page_title="Ứng dụng Nhận diện Bệnh Lá Cà Chua", page_icon="🍅", layout="centered")
 
 st.markdown("""
 <style>
@@ -158,15 +158,14 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # --- Giao diện Streamlit ---
-st.title("� ỨNG DỤNG NHẬN DIỆN BỆNH QUA LÁ CÀ CHUA 🍃")
-# Đã thêm class 'centered-text' để căn giữa dòng này
+st.title("🍅 ỨNG DỤNG NHẬN DIỆN BỆNH QUA LÁ CÀ CHUA 🍃")
 st.markdown('<p class="centered-text">Vui lòng chụp hoặc tải lên ảnh lá cà chua (có thể là lá khỏe hoặc bị bệnh) 🌱</p>', unsafe_allow_html=True)
 
 tep_anh = st.file_uploader(
-    "Kéo và thả tệp vào đây hoặc nhấp để duyệt", # Đã dịch sang tiếng Việt
+    "Kéo và thả tệp vào đây hoặc nhấp để duyệt",
     type=["jpg", "jpeg", "png"],
     label_visibility="collapsed",
-    help="Giới hạn 200MB mỗi tệp" # Đã dịch sang tiếng Việt
+    help="Giới hạn 200MB mỗi tệp"
 )
 
 if tep_anh is not None:
@@ -196,4 +195,3 @@ if tep_anh is not None:
 # Thêm một số khoảng trống và footer cuối cùng
 st.markdown("---")
 st.markdown('<div class="footer">Dự án được thực hiện bởi nhóm nghiên cứu AI.</div>', unsafe_allow_html=True)
-�
