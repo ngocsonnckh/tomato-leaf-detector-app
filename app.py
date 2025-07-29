@@ -14,7 +14,6 @@ load_dotenv()
 # --- Cấu hình mô hình Roboflow ---
 # LƯU Ý QUAN TRỌNG: ROBOFLOW_API_KEY được lấy từ biến môi trường (từ file .env khi chạy cục bộ,
 # hoặc từ Streamlit Secrets khi triển khai lên Streamlit Cloud).
-# Bạn đã cung cấp API Key: rSUzaeMGYrBA449orJYK
 KHOA_API = os.getenv("ROBOFLOW_API_KEY")
 
 TEN_MO_HINH = "tomato-leaf-diseases-lmem9"
@@ -66,50 +65,69 @@ st.markdown("""
     h1 {
         color: #B22222; /* Màu đỏ nổi bật hơn (FireBrick) */
         text-align: center;
-        margin-bottom: 1rem;
+        margin-bottom: 2rem; /* Tăng khoảng cách dưới tiêu đề */
         font-size: 3em;
         font-weight: 700;
         text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
     }
     
-    .upload-label {
-        font-size: 24px !important;
-        font-weight: 900 !important;
-        color: #c62828 !important;
-        text-align: center !important;
-        line-height: 1.4 !important;
-        display: block;
-        margin-bottom: 10px;
-    }
-
-    .centered-text {
-        text-align: center;
-        font-size: 1.2em;
-        margin-bottom: 1.5rem;
-    }
+    /* --- CSS ĐỂ TÙY CHỈNH KHUNG UPLOAD (PHIÊN BẢN SỬA LỖI MỚI NHẤT) --- */
     .stFileUploader {
         border: 2px dashed #a7d9b5;
         border-radius: 10px;
-        padding: 20px;
-        text-align: center;
-        background-color: #e6ffe6;
+        background-color: #e6ffe6 !important;
+        min-height: 150px;
+        position: relative;
+        padding: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
         transition: all 0.3s ease-in-out;
     }
     .stFileUploader:hover {
         border-color: #28a745;
-        background-color: #d4ffd4;
+        background-color: #d4ffd4 !important;
     }
-    .stFileUploader > div > button {
-        background-color: #28a745;
-        color: white;
-        border-radius: 8px;
-        padding: 10px 20px;
-        font-weight: bold;
-        transition: background-color 0.3s ease;
+
+    /* Làm cho toàn bộ dropzone và các phần tử con của nó trong suốt */
+    .stFileUploader [data-testid="stFileUploaderDropzone"],
+    .stFileUploader [data-testid="stFileUploaderDropzone"] * {
+        background: transparent !important;
+        border: none !important;
     }
-    .stFileUploader > div > button:hover {
-        background-color: #218838;
+
+    /* Ẩn văn bản và icon mặc định */
+    .stFileUploader [data-testid="stFileUploaderDropzoneInstructions"] {
+        display: none !important;
     }
+
+    /* Biến nút "Browse files" thành lớp phủ vô hình bao trùm toàn bộ khu vực */
+    .stFileUploader [data-testid="stFileUploaderDropzone"] button {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        opacity: 0;
+        cursor: pointer;
+    }
+
+    /* Thêm văn bản tùy chỉnh của bạn lên trên cùng */
+    .stFileUploader::before {
+        content: 'Bấm vào đây để chụp hoặc tải ảnh lá cà chua lên';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        color: #c62828;
+        font-weight: 900;
+        font-size: 1.2rem;
+        pointer-events: none; /* Quan trọng: để click có thể "xuyên" qua chữ */
+        text-align: center;
+        width: 90%;
+    }
+    /* --- KẾT THÚC CSS TÙY CHỈNH --- */
+
     .stImage {
         border-radius: 10px;
         box-shadow: 0 4px 8px rgba(0,0,0,0.1);
@@ -124,20 +142,20 @@ st.markdown("""
         padding: 18px;
         margin-top: 20px;
         box-shadow: 0 4px 6px rgba(0,0,0,0.08);
-        font-size: 1.4em !important; /* Tăng kích thước chữ của kết quả */
+        font-size: 1.4em !important;
         line-height: 1.6;
     }
     .stSuccess {
         background-color: #d4edda;
         color: #155724;
         border-left: 6px solid #28a745;
-        font-weight: 700 !important; /* Làm chữ đậm hơn */
+        font-weight: 700 !important;
     }
     .stInfo {
         background-color: #d1ecf1;
         color: #0c5460;
         border-left: 6px solid #17a2b8;
-        font-weight: 500 !important; /* Cũng làm chữ đậm hơn */
+        font-weight: 500 !important;
     }
     /* === KẾT THÚC CSS CẬP NHẬT === */
 
@@ -165,13 +183,7 @@ st.markdown("""
 # --- Giao diện Streamlit ---
 st.title("🍅 ỨNG DỤNG AI NHẬN DIỆN BỆNH QUA LÁ CÀ CHUA 🍃")
 
-# Sử dụng markdown để tạo nhãn tùy chỉnh, to, đậm và nổi bật
-st.markdown('<p class="upload-label">Bấm vào khung bên dưới để chụp hoặc tải ảnh lá cà chua lên</p>', unsafe_allow_html=True)
-# Thêm icon bàn tay 👇 ở dòng riêng, căn giữa và bên dưới dòng chữ trên
-st.markdown('<p style="text-align: center; font-size: 1.5em; margin-top: -10px; margin-bottom: 10px;">👇</p>', unsafe_allow_html=True)
-
-
-# Ẩn nhãn mặc định của file_uploader và sử dụng nhãn tùy chỉnh ở trên
+# Ẩn nhãn mặc định của file_uploader và sử dụng nhãn tùy chỉnh qua CSS
 tep_anh = st.file_uploader(
     label="Tải ảnh lên", # Dòng chữ này sẽ không hiển thị
     type=["jpg", "jpeg", "png"],
@@ -183,6 +195,7 @@ tep_anh = st.file_uploader(
 if tep_anh is not None:
     anh = Image.open(tep_anh).convert("RGB")
     st.image(anh, caption="📷 Ảnh đã tải lên", use_container_width=True)
+
     with st.spinner("🔍 Đang phân tích... Vui lòng chờ ⏳"):
         ket_qua = du_doan_benh(anh)
 
