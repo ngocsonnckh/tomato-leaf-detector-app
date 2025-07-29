@@ -99,6 +99,7 @@ st.markdown("""
         display: flex;
         justify-content: center;
         align-items: center;
+        position: relative; /* Cần thiết để định vị văn bản tùy chỉnh */
     }
     .stFileUploader:hover {
         border-color: #28a745;
@@ -108,6 +109,22 @@ st.markdown("""
     /* Ẩn toàn bộ nội dung mặc định (icon, text, button) bên trong dropzone */
     .stFileUploader [data-testid="stFileUploaderDropzone"] > div {
         display: none;
+    }
+    
+    /* Thêm văn bản tùy chỉnh vào bên trong khung upload */
+    .stFileUploader::before {
+        content: 'Bấm vào khung này để chụp hoặc tải ảnh lá cà chua lên';
+        display: block;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        pointer-events: none; /* Đảm bảo văn bản không cản trở việc click */
+        color: #c62828;
+        font-weight: 900;
+        font-size: 1.2rem;
+        width: 100%;
+        padding: 0 1rem;
     }
     /* --- KẾT THÚC CSS TÙY CHỈNH --- */
 
@@ -165,11 +182,7 @@ st.markdown("""
 
 # --- Giao diện Streamlit ---
 st.title("🍅 ỨNG DỤNG AI NHẬN DIỆN BỆNH QUA LÁ CÀ CHUA 🍃")
-
-# Sử dụng markdown để tạo nhãn tùy chỉnh, to, đậm và nổi bật
-st.markdown('<p class="upload-label">Bấm vào khung bên dưới để chụp hoặc tải ảnh lá cà chua lên</p>', unsafe_allow_html=True)
-# Thêm icon bàn tay 👇 ở dòng riêng, căn giữa và bên dưới dòng chữ trên
-st.markdown('<p style="text-align: center; font-size: 1.5em; margin-top: -10px; margin-bottom: 10px;">👇</p>', unsafe_allow_html=True)
+st.markdown('<div style="height: 4rem;"></div>', unsafe_allow_html=True) # Thêm khoảng trống
 
 
 # Ẩn nhãn mặc định của file_uploader và sử dụng nhãn tùy chỉnh ở trên
