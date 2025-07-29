@@ -107,7 +107,9 @@ st.markdown("""
     }
 
     /* Ẩn toàn bộ nội dung mặc định (icon, text, button) bên trong dropzone */
-    .stFileUploader [data-testid="stFileUploaderDropzone"] > div {
+    .stFileUploader [data-testid="stFileUploaderDropzone"] p,
+    .stFileUploader [data-testid="stFileUploaderDropzone"] svg,
+    .stFileUploader [data-testid="stFileUploaderDropzone"] button {
         display: none;
     }
     
