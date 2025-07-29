@@ -115,18 +115,20 @@ st.markdown("""
     
     /* Thêm văn bản tùy chỉnh vào bên trong khung upload */
     .stFileUploader::before {
-        content: 'Bấm vào khung này để chụp hoặc tải ảnh lá cà chua lên';
+        content: 'Kéo và thả tệp vào đây\\A(Giới hạn 200MB • JPG, JPEG, PNG)';
+        white-space: pre-wrap; /* Cho phép xuống dòng với \\A */
         display: block;
         position: absolute;
         top: 50%;
         left: 50%;
         transform: translate(-50%, -50%);
         pointer-events: none; /* Đảm bảo văn bản không cản trở việc click */
-        color: #c62828;
-        font-weight: 900;
-        font-size: 1.2rem;
+        color: #555;
+        font-weight: 500;
+        font-size: 1.1rem;
         width: 100%;
         padding: 0 1rem;
+        line-height: 1.5;
     }
     /* --- KẾT THÚC CSS TÙY CHỈNH --- */
 
