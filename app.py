@@ -71,11 +71,11 @@ st.markdown("""
         text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
     }
     
-    /* --- CSS ĐỂ TÙY CHỈNH KHUNG UPLOAD (PHIÊN BẢN SỬA LỖI MỚI NHẤT) --- */
+    /* --- CSS ĐỂ TÙY CHỈNH KHUNG UPLOAD (PHIÊN BẢN HOÀN CHỈNH) --- */
     .stFileUploader {
         border: 2px dashed #a7d9b5;
         border-radius: 10px;
-        background-color: #e6ffe6 !important;
+        background-color: #e6ffe6;
         min-height: 150px;
         position: relative;
         padding: 0;
@@ -83,20 +83,31 @@ st.markdown("""
         align-items: center;
         justify-content: center;
         transition: all 0.3s ease-in-out;
+        overflow: hidden; /* Ngăn các phần tử con tràn ra ngoài */
     }
     .stFileUploader:hover {
         border-color: #28a745;
-        background-color: #d4ffd4 !important;
+        background-color: #d4ffd4;
     }
 
-    /* Làm cho toàn bộ dropzone và các phần tử con của nó trong suốt */
-    .stFileUploader [data-testid="stFileUploaderDropzone"],
-    .stFileUploader [data-testid="stFileUploaderDropzone"] * {
-        background: transparent !important;
-        border: none !important;
+    /* Thêm văn bản tùy chỉnh vào khung uploader, luôn hiển thị */
+    .stFileUploader::before {
+        content: 'Bấm vào đây để chụp hoặc tải ảnh khác';
+        display: block;
+        position: absolute;
+        top: 2.5rem; /* Vị trí ở phía trên */
+        left: 50%;
+        transform: translateX(-50%);
+        color: #c62828;
+        font-weight: 900;
+        font-size: 1.2rem;
+        pointer-events: none;
+        text-align: center;
+        width: 90%;
+        z-index: 1;
     }
 
-    /* Ẩn văn bản và icon mặc định */
+    /* Ẩn các hướng dẫn mặc định của Streamlit */
     .stFileUploader [data-testid="stFileUploaderDropzoneInstructions"] {
         display: none !important;
     }
@@ -112,19 +123,23 @@ st.markdown("""
         cursor: pointer;
     }
 
-    /* Thêm văn bản tùy chỉnh của bạn lên trên cùng */
-    .stFileUploader::before {
-        content: 'Bấm vào đây để chụp hoặc tải ảnh lá cà chua lên';
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        color: #c62828;
-        font-weight: 900;
-        font-size: 1.2rem;
-        pointer-events: none; /* Quan trọng: để click có thể "xuyên" qua chữ */
-        text-align: center;
-        width: 90%;
+    /* Đảm bảo tên file đã tải lên nằm ở dưới và không có nền */
+    .stFileUploader [data-testid="stFileUploaderFile"] {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        padding: 1rem;
+        margin-top: 3.5rem; /* Đẩy tên file xuống dưới để không chồng chéo */
+        background: transparent !important;
+        font-size: 0.9em;
+        color: #333;
+    }
+    
+    .stFileUploader [data-testid="stFileUploaderDropzone"] section {
+        background: transparent !important;
+        border: none !important;
+        width: 100%; /* Đảm bảo section chiếm toàn bộ chiều rộng */
     }
     /* --- KẾT THÚC CSS TÙY CHỈNH --- */
 
